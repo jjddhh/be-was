@@ -10,6 +10,7 @@ import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import webserver.view.ViewResolver;
 
 public class RequestHandler implements Runnable {
     private static final Logger logger = LoggerFactory.getLogger(RequestHandler.class);
@@ -38,21 +39,11 @@ public class RequestHandler implements Runnable {
     }
 
     private byte[] getBytes(String url) throws IOException {
-        if(isFileRequest(url)){
+        if(ViewResolver.isFileRequest(url)){
             return Files.readAllBytes(new File("src/main/resources/templates" + url).toPath());
         }
 
         return "Hello Softeer".getBytes();
-    }
-
-    private boolean isFileRequest(String url) {
-        String[] splitUrl = url.split("[.]");
-        if(splitUrl.length == 0) return false;
-
-        String fileExtension = splitUrl[splitUrl.length - 1];
-        System.out.println(fileExtension);
-
-        return Extension.isProvidedExtension(fileExtension);
     }
 
     private static String getUrl(InputStream in) throws IOException {
@@ -79,25 +70,6 @@ public class RequestHandler implements Runnable {
             dos.flush();
         } catch (IOException e) {
             logger.error(e.getMessage());
-        }
-    }
-
-    public enum Extension {
-        HTML("html");
-        
-        private final String value;
-
-        private Extension(String value) {
-            this.value = value;
-        }
-
-        static boolean isProvidedExtension(String extension) {
-            Optional<String> findExtension = Arrays.stream(Extension.values())
-                    .map(t -> t.value)
-                    .filter(ext -> ext.equals(extension))
-                    .findFirst();
-
-            return findExtension.isPresent();
         }
     }
 }
