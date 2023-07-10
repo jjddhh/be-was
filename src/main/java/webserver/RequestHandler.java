@@ -26,13 +26,10 @@ public class RequestHandler implements Runnable {
 
         try (InputStream in = connection.getInputStream(); OutputStream out = connection.getOutputStream()) {
             String url = getUrl(in);
-
-
             DataOutputStream dos = new DataOutputStream(out);
-            if(isFileRequest(url)){
-                byte[] body = Files.readAllBytes(new File("src/main/resources/templates" + fileName).toPath());
 
-            }
+            byte[] body = getBytes(url);
+
             response200Header(dos, body.length);
             responseBody(dos, body);
         } catch (IOException e) {
@@ -40,9 +37,22 @@ public class RequestHandler implements Runnable {
         }
     }
 
+    private byte[] getBytes(String url) throws IOException {
+        if(isFileRequest(url)){
+            return Files.readAllBytes(new File("src/main/resources/templates" + url).toPath());
+        }
+
+        return "Hello Softeer".getBytes();
+    }
+
     private boolean isFileRequest(String url) {
-        String fileExtension = url.split(".")[1];
-        if(fileExtension.equals("html")) return true;
+        String[] splitUrl = url.split("[.]");
+        if(splitUrl.length == 0) return false;
+
+        String fileExtension = splitUrl[splitUrl.length - 1];
+        System.out.println(fileExtension);
+
+        return Extension.isProvidedExtension(fileExtension);
     }
 
     private static String getUrl(InputStream in) throws IOException {
@@ -81,8 +91,9 @@ public class RequestHandler implements Runnable {
             this.value = value;
         }
 
-        boolean isProvidedExtension(String extension) {
-            Optional<Extension> findExtension = Arrays.stream(Extension.values())
+        static boolean isProvidedExtension(String extension) {
+            Optional<String> findExtension = Arrays.stream(Extension.values())
+                    .map(t -> t.value)
                     .filter(ext -> ext.equals(extension))
                     .findFirst();
 
