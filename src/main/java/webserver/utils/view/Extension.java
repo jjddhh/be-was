@@ -1,6 +1,6 @@
-package webserver.view;
+package webserver.utils.view;
 
-public enum Extension {
+enum Extension {
     HTML("html");
 
     private final String value;

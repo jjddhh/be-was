@@ -3,14 +3,11 @@ package webserver;
 import java.io.*;
 import java.net.Socket;
 import java.nio.file.Files;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import webserver.view.ViewResolver;
+import webserver.utils.HttpUtil;
+import webserver.utils.view.FileUtil;
 
 public class RequestHandler implements Runnable {
     private static final Logger logger = LoggerFactory.getLogger(RequestHandler.class);
@@ -26,11 +23,11 @@ public class RequestHandler implements Runnable {
                 connection.getPort());
 
         try (InputStream in = connection.getInputStream(); OutputStream out = connection.getOutputStream()) {
-            String url = getUrl(in);
-            DataOutputStream dos = new DataOutputStream(out);
-
+            String content = HttpUtil.getContent(in);
+            String url = HttpUtil.getUrl(content);
             byte[] body = getBytes(url);
 
+            DataOutputStream dos = new DataOutputStream(out);
             response200Header(dos, body.length);
             responseBody(dos, body);
         } catch (IOException e) {
@@ -39,18 +36,11 @@ public class RequestHandler implements Runnable {
     }
 
     private byte[] getBytes(String url) throws IOException {
-        if(ViewResolver.isFileRequest(url)){
+        if(FileUtil.isFileRequest(url)){
             return Files.readAllBytes(new File("src/main/resources/templates" + url).toPath());
         }
 
         return "Hello Softeer".getBytes();
-    }
-
-    private static String getUrl(InputStream in) throws IOException {
-        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(in, "UTF-8"));
-        String[] firstLine = bufferedReader.readLine().split(" ");
-        String url = firstLine[1];
-        return url;
     }
 
     private void response200Header(DataOutputStream dos, int lengthOfBodyContent) {

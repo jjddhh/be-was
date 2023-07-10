@@ -2,6 +2,7 @@ package webserver.view;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import webserver.utils.view.FileUtil;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -14,7 +15,7 @@ class ViewResolverTest {
         String url = "/static/test/index.html";
 
         // when
-        boolean fileRequest = ViewResolver.isFileRequest(url);
+        boolean fileRequest = FileUtil.isFileRequest(url);
 
         // then
         assertTrue(fileRequest);
@@ -27,7 +28,7 @@ class ViewResolverTest {
         String url = "/user";
 
         // when
-        boolean fileRequest = ViewResolver.isFileRequest(url);
+        boolean fileRequest = FileUtil.isFileRequest(url);
 
         // then
         assertFalse(fileRequest);
@@ -40,7 +41,7 @@ class ViewResolverTest {
         String url = "/static/test/index.css";
 
         // when
-        boolean fileRequest = ViewResolver.isFileRequest(url);
+        boolean fileRequest = FileUtil.isFileRequest(url);
 
         // then
         assertFalse(fileRequest);
