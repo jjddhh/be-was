@@ -1,13 +1,12 @@
-package webserver.view;
+package webserver.utils.view;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import webserver.utils.view.FileUtil;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@DisplayName("ViewResolver 테스트")
-class ViewResolverTest {
+@DisplayName("FileUtil 테스트")
+class FileUtilTest {
     @Test
     @DisplayName("정적 파일 요청임을 확인")
     void isFileRequest() {
