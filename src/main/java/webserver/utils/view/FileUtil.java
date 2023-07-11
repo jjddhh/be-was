@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.Optional;
 
 public class FileUtil {
+
     public static boolean isFileRequest(String url) {
         String[] splitUrl = url.split("[.]");
         if(splitUrl.length == 0) return false;

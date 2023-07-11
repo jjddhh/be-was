@@ -1,6 +1,7 @@
 package webserver.utils.view;
 
 enum Extension {
+
     HTML("html");
 
     private final String value;
