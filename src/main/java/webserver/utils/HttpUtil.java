@@ -33,10 +33,10 @@ public class HttpUtil {
         if(content.toString().isEmpty()) throw InvalidRequestException.Exception;
     }
 
-    public static String getUrl(String content) throws IOException {
+    public static String getPathParam(String content) throws IOException {
         String[] splitContent = content.split(" ");
-        String url = splitContent[1];
+        String pathParam = splitContent[1];
 
-        return url;
+        return pathParam;
     }
 }

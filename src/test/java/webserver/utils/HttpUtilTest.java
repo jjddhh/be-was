@@ -63,7 +63,7 @@ class HttpUtilTest {
         String expectedUrl = "it";
 
         // when
-        String actualUrl = HttpUtil.getUrl(content);
+        String actualUrl = HttpUtil.getPathParam(content);
 
         // then
         assertEquals(expectedUrl, actualUrl);
@@ -77,7 +77,7 @@ class HttpUtilTest {
         String expectedUrl = "is";
 
         // when
-        String actualUrl = HttpUtil.getUrl(content);
+        String actualUrl = HttpUtil.getPathParam(content);
 
         // then
         assertNotEquals(expectedUrl, actualUrl);

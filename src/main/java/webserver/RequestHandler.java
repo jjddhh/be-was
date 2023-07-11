@@ -2,6 +2,8 @@ package webserver;
 
 import java.io.*;
 import java.net.Socket;
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.HashMap;
 import java.util.Map;
@@ -31,16 +33,16 @@ public class RequestHandler implements Runnable {
                 connection.getPort());
 
         try (InputStream in = connection.getInputStream();
-             BufferedReader reader = new BufferedReader(new InputStreamReader(in, "UTF-8"));
+             BufferedReader reader = new BufferedReader(new InputStreamReader(in, StandardCharsets.UTF_8));
              BufferedOutputStream bufferedOut = new BufferedOutputStream(connection.getOutputStream());
              DataOutputStream dos = new DataOutputStream(bufferedOut)) {
 
             final String content = HttpUtil.getContent(reader);
-            final String url = HttpUtil.getUrl(content);
+            final String pathParam = HttpUtil.getPathParam(content);
 
-            dispatchRequest(url);
+            dispatchRequest(pathParam);
 
-            byte[] body = getBytes(url);
+            byte[] body = getBytes(pathParam);
 
             response200Header(dos, body.length);
             responseBody(dos, body);
@@ -49,25 +51,25 @@ public class RequestHandler implements Runnable {
         }
     }
 
-    private void dispatchRequest(final String url) {
-        String[] splitUrl = url.split("[?]");
-        if(splitUrl[0].equals(USER_REGISTER_URL)) {
+    private void dispatchRequest(final String pathParam) {
+        String decodedPathParam = URLDecoder.decode(pathParam, StandardCharsets.UTF_8);
+        String[] splittedPathParam = decodedPathParam.split("[?]");
+        String path = splittedPathParam[0];
+        if(path.equals(USER_REGISTER_URL)) {
 
-            if(splitUrl.length > 1) {
-                String[] query = splitUrl[1].split("[&]");
+            String[] param = splittedPathParam[1].split("[&]");
 
-                Map<String, String> queryPair = new HashMap<>();
-                for (String pair : query) {
-                    String[] splitPair = pair.split("[=]");
-                    queryPair.put(splitPair[0], splitPair[1]);
-                }
-
-                User user = UserFactory.createUser(queryPair);
-
-                Database.addUser(user);
-
-                System.out.println(Database.findUserById(user.getUserId()));
+            Map<String, String> queryPair = new HashMap<>();
+            for (String pair : param) {
+                String[] splitPair = pair.split("[=]");
+                queryPair.put(splitPair[0], splitPair[1]);
             }
+
+            User user = UserFactory.createUser(queryPair);
+
+            Database.addUser(user);
+
+            System.out.println(Database.findUserById(user.getUserId()));
         }
     }
 
