@@ -3,23 +3,23 @@ package webserver.utils;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 @DisplayName("HttpUtil 테스트")
 class HttpUtilTest {
+
     @Test
     @DisplayName("요청 Content 받아오기")
     public void getContent() throws IOException {
         // given
         String expectedContent = "Hello, World!" + System.lineSeparator();
-        InputStream mockInputStream = new ByteArrayInputStream(expectedContent.getBytes("UTF-8"));
+        InputStream inputStream = new ByteArrayInputStream(expectedContent.getBytes("UTF-8"));
+        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
 
         // when
-        String actualContent = HttpUtil.getContent(mockInputStream);
+        String actualContent = HttpUtil.getContent(bufferedReader);
 
         // then
         assertEquals(expectedContent, actualContent);
@@ -30,10 +30,11 @@ class HttpUtilTest {
     public void getContentWithEmptyInput() throws IOException {
         // given
         String expectedContent = System.lineSeparator();
-        InputStream mockInputStream = new ByteArrayInputStream(expectedContent.getBytes("UTF-8"));
+        InputStream inputStream = new ByteArrayInputStream(expectedContent.getBytes("UTF-8"));
+        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
 
         // when
-        String actualContent = HttpUtil.getContent(mockInputStream);
+        String actualContent = HttpUtil.getContent(bufferedReader);
 
         // then
         assertEquals(expectedContent, actualContent);
@@ -44,10 +45,11 @@ class HttpUtilTest {
     public void getContentWithMultipleLinesInput() throws IOException {
         // given
         String expectedContent = "Hello," + System.lineSeparator() + "World!" + System.lineSeparator();
-        InputStream mockInputStream = new ByteArrayInputStream(expectedContent.getBytes("UTF-8"));
+        InputStream inputStream = new ByteArrayInputStream(expectedContent.getBytes("UTF-8"));
+        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
 
         // when
-        String actualContent = HttpUtil.getContent(mockInputStream);
+        String actualContent = HttpUtil.getContent(bufferedReader);
 
         // then
         assertEquals(expectedContent, actualContent);

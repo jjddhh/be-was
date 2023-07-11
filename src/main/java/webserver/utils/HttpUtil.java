@@ -11,8 +11,7 @@ public class HttpUtil {
 
     private static final Logger logger = LoggerFactory.getLogger(RequestHandler.class);
 
-    public static String getContent(InputStream in) throws IOException {
-        BufferedReader reader = new BufferedReader(new InputStreamReader(in, "UTF-8"));
+    public static String getContent(BufferedReader reader) throws IOException {
         StringBuilder content = new StringBuilder();
         String line;
         while ((line = reader.readLine()) != null) {
