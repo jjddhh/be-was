@@ -16,7 +16,8 @@ import container.annotation.MyMapping;
 
 public class MyContainer {
 
-	private MyContainer() {}
+	private MyContainer() {
+	}
 
 	private static final Map<String, Object> mapper = new HashMap<>();
 
@@ -33,7 +34,7 @@ public class MyContainer {
 
 		Set<Class<?>> classes = reflections.getSubTypesOf(Object.class);
 
-		for(Class<?> clazz : classes){
+		for (Class<?> clazz : classes) {
 			Annotation[] declaredAnnotations = clazz.getDeclaredAnnotations();
 
 			for (Annotation annotation : declaredAnnotations) {

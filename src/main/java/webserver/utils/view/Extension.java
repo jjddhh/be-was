@@ -2,15 +2,15 @@ package webserver.utils.view;
 
 enum Extension {
 
-    HTML("html");
+	HTML("html");
 
-    private final String value;
+	private final String value;
 
-    private Extension(String value) {
-        this.value = value;
-    }
+	private Extension(String value) {
+		this.value = value;
+	}
 
-    public String getValue() {
-        return value;
-    }
+	public String getValue() {
+		return value;
+	}
 }
