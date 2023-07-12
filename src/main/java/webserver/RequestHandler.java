@@ -10,7 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import container.MyContainer;
-import container.Controller;
+import container.Servlet;
 import webserver.utils.HttpUtil;
 import webserver.utils.view.FileUtil;
 
@@ -54,10 +54,10 @@ public class RequestHandler implements Runnable {
         String param = HttpUtil.getParam(pathParam);
         
         Object mappingClass = MyContainer.getMappingClass(path);
-        if (mappingClass instanceof Controller) {
+        if (mappingClass instanceof Servlet) {
             Map<String, String> model = HttpUtil.getModel(param);
 
-            ((Controller)mappingClass).execute(model);
+            ((Servlet)mappingClass).execute(model);
         }
     }
 

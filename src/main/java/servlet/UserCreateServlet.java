@@ -1,15 +1,15 @@
-package controller;
+package servlet;
 
 import java.util.Map;
 
-import container.Controller;
+import container.Servlet;
 import container.annotation.MyMapping;
 import db.Database;
 import model.user.User;
 import model.user.factory.UserFactory;
 
 @MyMapping("/user/create")
-public class UserCreateController implements Controller {
+public class UserCreateServlet implements Servlet {
 
 	@Override
 	public void execute(Map<String, String> model) {

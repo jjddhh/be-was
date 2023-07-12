@@ -2,7 +2,7 @@ package container;
 
 import java.util.Map;
 
-public interface Controller {
+public interface Servlet {
 
 	void execute(Map<String, String> model);
 }
