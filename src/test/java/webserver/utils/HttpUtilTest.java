@@ -4,6 +4,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.io.*;
+import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -81,5 +82,71 @@ class HttpUtilTest {
 
         // then
         assertNotEquals(expectedUrl, actualUrl);
+    }
+
+    @Test
+    @DisplayName("param 문자열에서 param pair을 Map으로 분리해서 반환")
+    void getModel() {
+        // given
+        String key1 = "key1";
+        String value1 = "test";
+        String key2 = "key2";
+        String value2 = "ing";
+        String param = key1 + "=" + value1 + "&" + key2 + "=" + value2;
+        // when
+        Map<String, String> model = HttpUtil.getModel(param);
+
+        // then
+        assertEquals(value1, model.get(key1));
+        assertEquals(value2, model.get(key2));
+    }
+
+    @Test
+    @DisplayName("param 문자열에 없는값 가져오려할 시, null 반환")
+    void getModelFailure() {
+        // given
+        String key1 = "key1";
+        String value1 = "test";
+        String key2 = "key2";
+        String value2 = "ing";
+        String param = key1 + "=" + value1 + "&" + key2 + "=" + value2;
+
+        String strangeKey = "strangeKey";
+
+        // when
+        Map<String, String> model = HttpUtil.getModel(param);
+
+        // then
+        assertNull(model.get(strangeKey));
+    }
+
+    @Test
+    @DisplayName("pathParam 에서 path 분리")
+    void getPath() {
+        // given
+        String path = "/create";
+        String param = "userId=javajigi&password=password&name=tester&email=javajigi@slipp.net";
+        String pathParam = path + "?" + param;
+
+        // when
+        String actual = HttpUtil.getPath(pathParam);
+
+        // then
+        assertEquals(path, actual);
+    }
+
+    @Test
+    @DisplayName("pathParam 에서 param 분리")
+    void getParam() {
+        // given
+        String path = "/create";
+        String param = "userId=javajigi&password=password&name=tester&email=javajigi@slipp.net";
+        String pathParam = param + "?" + param;
+
+        // when
+        String actual = HttpUtil.getParam(pathParam);
+
+        // then
+        assertEquals(param, actual);
     }
 }

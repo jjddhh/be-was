@@ -66,13 +66,13 @@ public class HttpUtil {
     }
 
     public static String getPath(String pathParam) {
-        String[] pathAndParam = getPathAndParam(pathParam);
+        String[] pathAndParam = getDecodedPathAndParam(pathParam);
         String path = pathAndParam[0];
         return path;
     }
 
     public static String getParam(String pathParam) {
-        String[] pathAndParam = getPathAndParam(pathParam);
+        String[] pathAndParam = getDecodedPathAndParam(pathParam);
 
         if(pathAndParam.length == 1) return null;
 
@@ -80,7 +80,7 @@ public class HttpUtil {
         return param;
     }
 
-    private static String[] getPathAndParam(String pathParam) {
+    private static String[] getDecodedPathAndParam(String pathParam) {
         String decodedPathParam = URLDecoder.decode(pathParam, StandardCharsets.UTF_8);
         String[] pathAndParam = decodedPathParam.split(PATH_PARAM_SEPARATOR);
         return pathAndParam;

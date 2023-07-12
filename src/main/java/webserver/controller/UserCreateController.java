@@ -9,7 +9,7 @@ import model.user.User;
 import model.user.factory.UserFactory;
 
 @MyMapping("/user/create")
-public class UserController implements Controller {
+public class UserCreateController implements Controller {
 
 	@Override
 	public void execute(Map<String, String> model) {
