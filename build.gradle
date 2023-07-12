@@ -1,7 +1,16 @@
 plugins {
     id 'java'
     id 'idea'
+    id 'jacoco'
 }
+
+test {
+    finalizedBy jacocoTestReport // 테스트 종료후 항상 리포트 생성
+}
+jacocoTestReport {
+    dependsOn test // 리포트 생성을 위해서는 test가 먼저 완료되어야 함
+}
+
 
 group 'codesquad'
 version '1.0-SNAPSHOT'
