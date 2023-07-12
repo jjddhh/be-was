@@ -2,23 +2,21 @@ package webserver;
 
 import java.io.*;
 import java.net.Socket;
-import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
-import java.util.HashMap;
 import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import db.Database;
-import model.User;
-import model.factory.UserFactory;
+import container.MyContainer;
+import container.Controller;
 import webserver.utils.HttpUtil;
 import webserver.utils.view.FileUtil;
 
 public class RequestHandler implements Runnable {
 
+    private static final String STATIC_PATH = "src/main/resources/templates";
     private static final Logger logger = LoggerFactory.getLogger(RequestHandler.class);
 
     private Socket connection;
@@ -52,30 +50,20 @@ public class RequestHandler implements Runnable {
     }
 
     private void dispatchRequest(final String pathParam) {
-        String decodedPathParam = URLDecoder.decode(pathParam, StandardCharsets.UTF_8);
-        String[] splittedPathParam = decodedPathParam.split("[?]");
-        String path = splittedPathParam[0];
-        if(path.equals(USER_REGISTER_URL)) {
+        String path = HttpUtil.getPath(pathParam);
+        String param = HttpUtil.getParam(pathParam);
+        
+        Object mappingClass = MyContainer.getMappingClass(path);
+        if (mappingClass instanceof Controller) {
+            Map<String, String> model = HttpUtil.getModel(param);
 
-            String[] param = splittedPathParam[1].split("[&]");
-
-            Map<String, String> queryPair = new HashMap<>();
-            for (String pair : param) {
-                String[] splitPair = pair.split("[=]");
-                queryPair.put(splitPair[0], splitPair[1]);
-            }
-
-            User user = UserFactory.createUser(queryPair);
-
-            Database.addUser(user);
-
-            System.out.println(Database.findUserById(user.getUserId()));
+            ((Controller)mappingClass).execute(model);
         }
     }
 
     private byte[] getBytes(final String url) throws IOException {
         if(FileUtil.isFileRequest(url)){
-            return Files.readAllBytes(new File("src/main/resources/templates" + url).toPath());
+            return Files.readAllBytes(new File(STATIC_PATH + url).toPath());
         }
 
         return "Hello Softeer".getBytes();

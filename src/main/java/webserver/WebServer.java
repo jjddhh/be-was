@@ -8,6 +8,8 @@ import java.util.concurrent.Executors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import container.MyContainer;
+
 public class WebServer {
 
     private static final Logger logger = LoggerFactory.getLogger(WebServer.class);
@@ -21,6 +23,8 @@ public class WebServer {
         } else {
             port = Integer.parseInt(args[0]);
         }
+
+        MyContainer.start(WebServer.class);
 
         ExecutorService executor = Executors.newFixedThreadPool(MAX_THREADS);
 

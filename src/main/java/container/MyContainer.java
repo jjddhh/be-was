@@ -16,6 +16,8 @@ import container.annotation.MyMapping;
 
 public class MyContainer {
 
+	private MyContainer() {}
+
 	private static final Map<String, Object> mapper = new HashMap<>();
 
 	public static Object getMappingClass(String path) {
