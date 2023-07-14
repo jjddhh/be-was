@@ -11,8 +11,8 @@ import org.slf4j.LoggerFactory;
 
 import container.MyContainer;
 import container.Servlet;
-import webserver.utils.HttpUtil;
-import webserver.utils.view.FileUtil;
+import webserver.http.HttpUtil;
+import webserver.http.FileUtil;
 
 public class RequestHandler implements Runnable {
 

@@ -1,7 +1,9 @@
-package webserver.utils.view;
+package webserver.http;
 
 import java.util.Arrays;
 import java.util.Optional;
+
+import webserver.http.view.Extension;
 
 public class FileUtil {
 

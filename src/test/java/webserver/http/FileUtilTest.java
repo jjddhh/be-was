@@ -1,9 +1,11 @@
-package webserver.utils.view;
+package webserver.http;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
+
+import webserver.http.FileUtil;
 
 @DisplayName("FileUtil 테스트")
 class FileUtilTest {

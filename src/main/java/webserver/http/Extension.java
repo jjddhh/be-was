@@ -1,8 +1,9 @@
-package webserver.utils.view;
+package webserver.http;
 
 enum Extension {
 
-	HTML("html");
+	HTML("html"), CSS("css"), JS("js"),
+	ICO("ico"), PNG("png"), JPG("jpg");
 
 	private final String value;
 
