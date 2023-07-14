@@ -8,4 +8,4 @@ Java Web Application Server 2023
 를 참고하여 작성되었습니다.
 
 ## 학습 정리
-[Github Wiki](https://github.com/jjddhh/be-was/wiki/%08HOME)
+[Github Wiki](https://github.com/jjddhh/be-was/wiki)
