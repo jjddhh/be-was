@@ -1,7 +1,16 @@
 plugins {
     id 'java'
     id 'idea'
+    id 'jacoco'
 }
+
+test {
+    finalizedBy jacocoTestReport // 테스트 종료후 항상 리포트 생성
+}
+jacocoTestReport {
+    dependsOn test // 리포트 생성을 위해서는 test가 먼저 완료되어야 함
+}
+
 
 group 'codesquad'
 version '1.0-SNAPSHOT'
@@ -17,6 +26,9 @@ dependencies {
     implementation 'com.google.guava:guava:29.0-jre'
     implementation 'ch.qos.logback:logback-classic:1.2.3'
     implementation 'com.github.jknack:handlebars:4.2.0'
+
+    implementation 'org.reflections:reflections:0.9.11'
+
 
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.1'
     testImplementation 'org.junit.jupiter:junit-jupiter:5.8.1'

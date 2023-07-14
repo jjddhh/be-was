@@ -1,6 +1,7 @@
 package webserver.exception;
 
 public class InvalidRequestException extends RuntimeException {
+
     public static final InvalidRequestException Exception = new InvalidRequestException();
 
     private InvalidRequestException() {
