@@ -1,6 +1,6 @@
 package webserver.http;
 
-enum Extension {
+public enum Extension {
 
 	HTML("html"), CSS("css"), JS("js"),
 	ICO("ico"), PNG("png"), JPG("jpg");
@@ -13,5 +13,9 @@ enum Extension {
 
 	public String getValue() {
 		return value;
+	}
+
+	public static boolean isDynamicFile(String extension) {
+		return extension.equals(HTML.value);
 	}
 }

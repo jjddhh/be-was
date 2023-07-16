@@ -5,7 +5,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import webserver.http.FileUtil;
+import webserver.http.util.FileUtil;
 
 @DisplayName("FileUtil 테스트")
 class FileUtilTest {

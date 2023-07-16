@@ -8,6 +8,8 @@ import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import webserver.http.util.HttpUtil;
+
 @DisplayName("HttpUtil 테스트")
 class HttpUtilTest {
 

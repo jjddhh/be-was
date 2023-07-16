@@ -11,12 +11,12 @@ import org.slf4j.LoggerFactory;
 
 import container.MyContainer;
 import container.Servlet;
-import webserver.http.HttpUtil;
-import webserver.http.FileUtil;
+import webserver.http.HttpResponse;
+import webserver.http.util.HttpUtil;
+import webserver.http.util.FileUtil;
 
 public class RequestHandler implements Runnable {
 
-	private static final String STATIC_PATH = "src/main/resources/templates";
 	private static final Logger logger = LoggerFactory.getLogger(RequestHandler.class);
 
 	private Socket connection;
@@ -34,15 +34,16 @@ public class RequestHandler implements Runnable {
 			 BufferedOutputStream bufferedOut = new BufferedOutputStream(connection.getOutputStream());
 			 DataOutputStream dos = new DataOutputStream(bufferedOut)) {
 
-			final String content = HttpUtil.getContent(reader);
-			final String pathParam = HttpUtil.getPathParam(content);
+			final String header = HttpUtil.getContent(reader);
+			final String pathParam = HttpUtil.getPathParam(header);
+			final String contentType = HttpUtil.getContentType(header);
 
 			dispatchRequest(pathParam);
 
 			byte[] body = getBytes(pathParam);
 
-			response200Header(dos, body.length);
-			responseBody(dos, body);
+			HttpResponse httpResponse = new HttpResponse(dos, body, contentType);
+			httpResponse.doResponse();
 		} catch (IOException e) {
 			logger.error(e.getMessage());
 		}
@@ -62,29 +63,10 @@ public class RequestHandler implements Runnable {
 
 	private byte[] getBytes(final String url) throws IOException {
 		if (FileUtil.isFileRequest(url)) {
-			return Files.readAllBytes(new File(STATIC_PATH + url).toPath());
+			String filePath = FileUtil.getFilePath(url);
+			return Files.readAllBytes(new File(filePath).toPath());
 		}
 
 		return "Hello Softeer".getBytes();
-	}
-
-	private void response200Header(final DataOutputStream dos, final int lengthOfBodyContent) {
-		try {
-			dos.writeBytes("HTTP/1.1 200 OK \r\n");
-			dos.writeBytes("Content-Type: text/html;charset=utf-8\r\n");
-			dos.writeBytes("Content-Length: " + lengthOfBodyContent + "\r\n");
-			dos.writeBytes("\r\n");
-		} catch (IOException e) {
-			logger.error(e.getMessage());
-		}
-	}
-
-	private void responseBody(final DataOutputStream dos, final byte[] body) {
-		try {
-			dos.write(body, 0, body.length);
-			dos.flush();
-		} catch (IOException e) {
-			logger.error(e.getMessage());
-		}
 	}
 }
