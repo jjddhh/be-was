@@ -12,11 +12,12 @@ import model.user.User;
 import model.user.factory.UserFactory;
 import servlet.domain.user.exception.AlreadyExistUserException;
 
+//@ResponseBody
 @MyMapping("/user/create")
 public class UserCreateServlet implements Servlet {
 
 	@Override
-	public void execute(Map<String, String> model) {
+	public String execute(Map<String, String> model) {
 		User user = UserFactory.createUser(model);
 
 		NamedLock namedLocks = new NamedLock();
@@ -32,6 +33,8 @@ public class UserCreateServlet implements Servlet {
 		} finally {
 			lock.unlock();
 		}
+
+		return "redirect:/index.html";
 	}
 
 	private void verifyCreateUser(Optional<User> findUser) {

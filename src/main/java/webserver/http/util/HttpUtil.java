@@ -52,7 +52,7 @@ public class HttpUtil {
 	}
 
 	public static Map<String, String> getModel(String param) {
-		if (hasNoParam(param)) {
+		if (isEmptyParam(param)) {
 			return new HashMap<>();
 		}
 
@@ -66,8 +66,8 @@ public class HttpUtil {
 		return queryPair;
 	}
 
-	private static boolean hasNoParam(String param) {
-		return Objects.isNull(param);
+	private static boolean isEmptyParam(String param) {
+		return Objects.isNull(param) || param.isEmpty();
 	}
 
 	public static String getPath(String pathParam) {
@@ -105,7 +105,7 @@ public class HttpUtil {
 		throw InvalidRequestException.Exception;
 	}
 
-	public static Map<String, String> parseHeaders(String headers) {
+	private static Map<String, String> parseHeaders(final String headers) {
 		Map<String, String> headerMap = new HashMap<>();
 		String[] lines = headers.split("\n");
 

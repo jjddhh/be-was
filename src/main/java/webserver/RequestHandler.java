@@ -1,16 +1,21 @@
 package webserver;
 
 import java.io.*;
+import java.lang.annotation.Annotation;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.util.Arrays;
 import java.util.Map;
 
+import container.annotation.ResponseBody;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import container.MyContainer;
 import container.Servlet;
+import webserver.exception.InvalidRequestException;
+import webserver.http.HttpRequest;
 import webserver.http.HttpResponse;
 import webserver.http.util.HttpUtil;
 import webserver.http.util.FileUtil;
@@ -34,39 +39,51 @@ public class RequestHandler implements Runnable {
 			 BufferedOutputStream bufferedOut = new BufferedOutputStream(connection.getOutputStream());
 			 DataOutputStream dos = new DataOutputStream(bufferedOut)) {
 
-			final String header = HttpUtil.getContent(reader);
-			final String pathParam = HttpUtil.getPathParam(header);
-			final String contentType = HttpUtil.getContentType(header);
+			HttpRequest httpRequest = new HttpRequest(reader);
 
-			dispatchRequest(pathParam);
+			HttpResponse httpResponse = dispatchRequest(dos, httpRequest);
 
-			byte[] body = getBytes(pathParam);
-
-			HttpResponse httpResponse = new HttpResponse(dos, body, contentType);
 			httpResponse.doResponse();
 		} catch (IOException e) {
 			logger.error(e.getMessage());
 		}
 	}
 
-	private void dispatchRequest(final String pathParam) {
-		String path = HttpUtil.getPath(pathParam);
-		String param = HttpUtil.getParam(pathParam);
+	private HttpResponse dispatchRequest(DataOutputStream dos, HttpRequest httpRequest) throws IOException {
+		Object mappingClass = MyContainer.getMappingClass(httpRequest.getPath());
 
-		Object mappingClass = MyContainer.getMappingClass(path);
 		if (mappingClass instanceof Servlet) {
-			Map<String, String> model = HttpUtil.getModel(param);
-
-			((Servlet)mappingClass).execute(model);
+			return processServlet(dos, (Servlet) mappingClass, httpRequest);
 		}
+
+		return HttpResponse.createResourceResponse(dos, httpRequest.getPath(), httpRequest.getContentType());
 	}
 
-	private byte[] getBytes(final String url) throws IOException {
-		if (FileUtil.isFileRequest(url)) {
-			String filePath = FileUtil.getFilePath(url);
-			return Files.readAllBytes(new File(filePath).toPath());
+	private HttpResponse processServlet(DataOutputStream dos, Servlet servlet, HttpRequest httpRequest) throws IOException {
+		Annotation[] declaredAnnotations = servlet.getClass().getDeclaredAnnotations();
+		Map<String, String> model = HttpUtil.getModel(httpRequest.getParam());
+
+		String result = servlet.execute(model);
+
+		if (isResponseBody(declaredAnnotations)) {
+			return HttpResponse.createDefaultResponse(dos, result, httpRequest.getContentType());
 		}
 
-		return "Hello Softeer".getBytes();
+		if (isRedirect(result)) {
+			return HttpResponse.createRedirectResponse(dos, result);
+		}
+
+		return HttpResponse.createResourceResponse(dos, result, httpRequest.getContentType());
+	}
+
+	private static boolean isResponseBody(Annotation[] declaredAnnotations) {
+		return Arrays.stream(declaredAnnotations)
+				.filter(annotation -> annotation instanceof ResponseBody)
+				.findAny()
+				.isPresent();
+	}
+
+	private static boolean isRedirect(String result) {
+		return result.startsWith("redirect:");
 	}
 }
