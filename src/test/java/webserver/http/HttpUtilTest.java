@@ -1,13 +1,15 @@
 package webserver.http;
 
+import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.io.*;
 import java.util.Map;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.assertj.core.api.Assertions.*;
 
+import webserver.exception.InvalidRequestException;
 import webserver.http.util.HttpUtil;
 
 @DisplayName("HttpUtil 테스트")
@@ -25,7 +27,7 @@ class HttpUtilTest {
 		String actualContent = HttpUtil.getContent(bufferedReader);
 
 		// then
-		assertEquals(expectedContent, actualContent);
+		assertThat(actualContent).isEqualTo(expectedContent);
 	}
 
 	@Test
@@ -40,7 +42,7 @@ class HttpUtilTest {
 		String actualContent = HttpUtil.getContent(bufferedReader);
 
 		// then
-		assertEquals(expectedContent, actualContent);
+		assertThat(actualContent).isEqualTo(expectedContent);
 	}
 
 	@Test
@@ -55,7 +57,20 @@ class HttpUtilTest {
 		String actualContent = HttpUtil.getContent(bufferedReader);
 
 		// then
-		assertEquals(expectedContent, actualContent);
+		assertThat(actualContent).isEqualTo(expectedContent);
+	}
+
+	@Test
+	@DisplayName("empty content 검증")
+	void verifyEmptyContent() throws UnsupportedEncodingException {
+		// given
+		String emptyContent = "";
+		InputStream inputStream = new ByteArrayInputStream(emptyContent.getBytes("UTF-8"));
+		BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
+
+		// when then
+		assertThatThrownBy(() -> HttpUtil.getContent(bufferedReader))
+			.isInstanceOf(InvalidRequestException.class);
 	}
 
 	@Test
@@ -69,7 +84,7 @@ class HttpUtilTest {
 		String actualUrl = HttpUtil.getPathParam(content);
 
 		// then
-		assertEquals(expectedUrl, actualUrl);
+		assertThat(actualUrl).isEqualTo(expectedUrl);
 	}
 
 	@Test
@@ -83,7 +98,7 @@ class HttpUtilTest {
 		String actualUrl = HttpUtil.getPathParam(content);
 
 		// then
-		assertNotEquals(expectedUrl, actualUrl);
+		assertThat(actualUrl).isNotEqualTo(expectedUrl);
 	}
 
 	@Test
@@ -99,8 +114,10 @@ class HttpUtilTest {
 		Map<String, String> model = HttpUtil.getModel(param);
 
 		// then
-		assertEquals(value1, model.get(key1));
-		assertEquals(value2, model.get(key2));
+		SoftAssertions.assertSoftly(softAssertions -> {
+			softAssertions.assertThat(model.get(key1)).isEqualTo(value1);
+			softAssertions.assertThat(model.get(key2)).isEqualTo(value2);
+		});
 	}
 
 	@Test
@@ -119,7 +136,7 @@ class HttpUtilTest {
 		Map<String, String> model = HttpUtil.getModel(param);
 
 		// then
-		assertNull(model.get(strangeKey));
+		assertThat(model.get(strangeKey)).isNull();
 	}
 
 	@Test
@@ -134,7 +151,7 @@ class HttpUtilTest {
 		String actual = HttpUtil.getPath(pathParam);
 
 		// then
-		assertEquals(path, actual);
+		assertThat(actual).isEqualTo(path);
 	}
 
 	@Test
@@ -149,6 +166,81 @@ class HttpUtilTest {
 		String actual = HttpUtil.getParam(pathParam);
 
 		// then
-		assertEquals(param, actual);
+		assertThat(actual).isEqualTo(param);
+	}
+
+	@Test
+	@DisplayName("param 없는 상태로 getParam 요청시 null 반환")
+	void getNullParam() {
+		// given
+		String path = "/create";
+		// String pathParam = param + "?" + param;
+
+		// when
+		String actual = HttpUtil.getParam(path);
+
+		// then
+		assertThat(actual).isEqualTo(null);
+	}
+	
+	@Test
+	@DisplayName("null param으로 getModel 요청시 empty map 반환")
+	void getEmptyMap() {
+	    // given
+		String nullParam = null;
+		String emptyParam = "";
+	    
+	    // when
+		Map<String, String> nullModel = HttpUtil.getModel(nullParam);
+		Map<String, String> emptyModel = HttpUtil.getModel(emptyParam);
+
+		// then
+		SoftAssertions.assertSoftly(softAssertions -> {
+			softAssertions.assertThat(nullModel.size()).isEqualTo(0);
+			softAssertions.assertThat(emptyModel.size()).isEqualTo(0);
+		});
+	}
+
+	@Test
+	@DisplayName("param 존재하지 않을 경우")
+	void hasNoParam() {
+		// given
+		String path = "/create";
+
+		// when
+		String actual = HttpUtil.getParam(path);
+
+		// then
+		assertThat(actual).isEqualTo(null);
+	}
+
+	@Test
+	@DisplayName("content type 가져오기")
+	void getContentType() {
+	    // given
+		String header = "GET /index.html HTTP/1.1\n" +
+			"Host: localhost:8080\n" +
+			"Connection: keep-alive\n" +
+			"Accept: */*";
+
+	    // when
+		String contentType = HttpUtil.getContentType(header);
+
+		// then
+		assertThat(contentType).isEqualTo("*/*");
+	}
+
+	@Test
+	@DisplayName("Accept 필드값 존재하지 않을 경우")
+	void getContentTypeFailure() {
+		// given
+
+		String header = "GET /index.html HTTP/1.1\n" +
+			"Host: localhost:8080\n" +
+			"Connection: keep-alive\n";
+
+		// when then
+		assertThatThrownBy(() -> HttpUtil.getContentType(header))
+			.isInstanceOf(InvalidRequestException.class);
 	}
 }
