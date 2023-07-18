@@ -37,39 +37,39 @@ public class RequestHandler implements Runnable {
 
 			HttpRequest httpRequest = new HttpRequest(reader);
 
-			HttpResponse httpResponse = dispatchRequest(dos, httpRequest);
+			HttpResponse httpResponse = dispatchRequest(httpRequest);
 
-			httpResponse.doResponse();
+			httpResponse.doResponse(dos);
 		} catch (IOException e) {
 			logger.error(e.getMessage());
 		}
 	}
 
-	private HttpResponse dispatchRequest(DataOutputStream dos, HttpRequest httpRequest) throws IOException {
+	private HttpResponse dispatchRequest(HttpRequest httpRequest) throws IOException {
 		Object mappingClass = MyContainer.getMappingClass(httpRequest.getPath());
 
 		if (mappingClass instanceof Servlet) {
-			return processServlet(dos, (Servlet) mappingClass, httpRequest);
+			return processServlet((Servlet) mappingClass, httpRequest);
 		}
 
-		return HttpResponse.createResourceResponse(dos, httpRequest.getPath(), httpRequest.getContentType());
+		return HttpResponse.createResourceResponse(httpRequest.getPath(), httpRequest.getContentType());
 	}
 
-	private HttpResponse processServlet(DataOutputStream dos, Servlet servlet, HttpRequest httpRequest) throws IOException {
+	private HttpResponse processServlet(Servlet servlet, HttpRequest httpRequest) throws IOException {
 		Annotation[] declaredAnnotations = servlet.getClass().getDeclaredAnnotations();
 		Map<String, String> model = httpRequest.getModel();
 
 		String result = servlet.execute(model);
 
 		if (isResponseBody(declaredAnnotations)) {
-			return HttpResponse.createDefaultResponse(dos, result, httpRequest.getContentType());
+			return HttpResponse.createDefaultResponse(result, httpRequest.getContentType());
 		}
 
 		if (isRedirect(result)) {
-			return HttpResponse.createRedirectResponse(dos, result);
+			return HttpResponse.createRedirectResponse(result);
 		}
 
-		return HttpResponse.createResourceResponse(dos, result, httpRequest.getContentType());
+		return HttpResponse.createResourceResponse(result, httpRequest.getContentType());
 	}
 
 	private static boolean isResponseBody(Annotation[] declaredAnnotations) {

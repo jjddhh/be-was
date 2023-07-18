@@ -19,38 +19,34 @@ public class HttpResponse {
 	private static final Logger logger = LoggerFactory.getLogger(RequestHandler.class);
 
 	private final int status;
-	// TODO: dos 밖으로
-	private final DataOutputStream dos;
 	private byte[] body;
 	private String contentType;
 	private String redirectUrl;
 
-	public HttpResponse(final int status, final DataOutputStream dos, final byte[] body, final String contentType) {
+	public HttpResponse(final int status, final byte[] body, final String contentType) {
 		this.status = status;
-		this.dos = dos;
 		this.body = body;
 		this.contentType = contentType;
 	}
 
-	public HttpResponse(final int status, final DataOutputStream dos, final String redirectUrl) {
+	public HttpResponse(final int status, final String redirectUrl) {
 		this.status = status;
-		this.dos = dos;
 		this.redirectUrl = redirectUrl;
 	}
 
-	public static HttpResponse createRedirectResponse(DataOutputStream dos, String resourceUrl) {
+	public static HttpResponse createRedirectResponse(String resourceUrl) {
 		String redirectUrl = resourceUrl.split(":")[1];
-		return new HttpResponse(STATUS_REDIRECT, dos, redirectUrl);
+		return new HttpResponse(STATUS_REDIRECT, redirectUrl);
 	}
 
-	public static HttpResponse createDefaultResponse(DataOutputStream dos, String body, String contentType) {
-		return new HttpResponse(STATUS_OK, dos, body.getBytes(), contentType);
+	public static HttpResponse createDefaultResponse(String body, String contentType) {
+		return new HttpResponse(STATUS_OK, body.getBytes(), contentType);
 	}
 
-	public static HttpResponse createResourceResponse(DataOutputStream dos, String path, String contentType) throws
+	public static HttpResponse createResourceResponse(String path, String contentType) throws
 		IOException {
 		byte[] body = getResourceBytes(path);
-		return new HttpResponse(STATUS_OK, dos, body, contentType);
+		return new HttpResponse(STATUS_OK, body, contentType);
 	}
 
 	private static byte[] getResourceBytes(final String url) throws IOException {
@@ -62,19 +58,19 @@ public class HttpResponse {
 		throw InvalidRequestException.Exception;
 	}
 
-	public void doResponse() {
+	public void doResponse(final DataOutputStream dos) {
 		if(status == STATUS_OK) {
-			response200Header();
+			response200Header(dos);
 		}
 
 		if (status == STATUS_REDIRECT) {
-			response303Header(redirectUrl);
+			response303Header(dos, redirectUrl);
 		}
 
 		responseBody(dos, body);
 	}
 
-	private void response200Header() {
+	private void response200Header(DataOutputStream dos) {
 		try {
 			dos.writeBytes("HTTP/1.1 200 OK \r\n");
 			dos.writeBytes("Content-Type: " + contentType + ";charset=utf-8\r\n");
@@ -85,7 +81,7 @@ public class HttpResponse {
 		}
 	}
 
-	private void response303Header(String redirectUrl) {
+	private void response303Header(DataOutputStream dos, String redirectUrl) {
 		try {
 			dos.writeBytes("HTTP/1.1 303 See Other\r\n");
 			dos.writeBytes("Location: " + redirectUrl + "\r\n");
