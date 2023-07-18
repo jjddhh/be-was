@@ -9,12 +9,16 @@ public class SessionStorage {
 
 	private static Map<String, String> session = Maps.newHashMap();
 
-	public static boolean isLoginUser(String userId) {
-		Optional<String> optionalSocialId = Optional.ofNullable(session.get(userId));
+	public static boolean isLoginUser(String sessionId) {
+		Optional<String> optionalSocialId = Optional.ofNullable(session.get(sessionId));
 		return optionalSocialId.isPresent();
 	}
 
-	public static void setSession(String sessionId, String socialId) {
-		session.put(sessionId, socialId);
+	public static void setSession(String sessionId, String userId) {
+		session.put(sessionId, userId);
+	}
+
+	public static void flush() {
+		session = Maps.newHashMap();
 	}
 }
