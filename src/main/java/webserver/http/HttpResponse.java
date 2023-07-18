@@ -19,6 +19,7 @@ public class HttpResponse {
 	private static final Logger logger = LoggerFactory.getLogger(RequestHandler.class);
 
 	private final int status;
+	// TODO: dos 밖으로
 	private final DataOutputStream dos;
 	private byte[] body;
 	private String contentType;
