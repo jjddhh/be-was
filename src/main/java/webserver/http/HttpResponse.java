@@ -4,6 +4,8 @@ import java.io.DataOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.util.Map;
+import java.util.Objects;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,31 +24,43 @@ public class HttpResponse {
 	private byte[] body;
 	private String contentType;
 	private String redirectUrl;
+	private Map<String, String> model;
 
-	public HttpResponse(final int status, final byte[] body, final String contentType) {
+	public HttpResponse(final int status, final byte[] body, final String contentType,
+		final Map<String, String> model) {
 		this.status = status;
 		this.body = body;
 		this.contentType = contentType;
+		this.model = model;
 	}
 
-	public HttpResponse(final int status, final String redirectUrl) {
+	public HttpResponse(final int status, final String redirectUrl, final Map<String, String> model) {
 		this.status = status;
 		this.redirectUrl = redirectUrl;
+		this.model = model;
 	}
 
-	public static HttpResponse createRedirectResponse(String resourceUrl) {
-		String redirectUrl = resourceUrl.split(":")[1];
-		return new HttpResponse(STATUS_REDIRECT, redirectUrl);
+	public static HttpResponse createRedirectResponse(final String resourceUrl, final Map<String, String> model) {
+		final String redirectUrl = resourceUrl.split(":")[1];
+		return new HttpResponse(STATUS_REDIRECT, redirectUrl, model);
 	}
 
-	public static HttpResponse createDefaultResponse(String body, String contentType) {
-		return new HttpResponse(STATUS_OK, body.getBytes(), contentType);
+	public static HttpResponse createDefaultResponse(
+		final String body,
+		final String contentType,
+		final Map<String, String> model) {
+
+		return new HttpResponse(STATUS_OK, body.getBytes(), contentType, model);
 	}
 
-	public static HttpResponse createResourceResponse(String path, String contentType) throws
-		IOException {
+	public static HttpResponse createResourceResponse(
+		final String path,
+		final String contentType,
+		final Map<String, String> model) throws IOException {
+
 		byte[] body = getResourceBytes(path);
-		return new HttpResponse(STATUS_OK, body, contentType);
+
+		return new HttpResponse(STATUS_OK, body, contentType, model);
 	}
 
 	private static byte[] getResourceBytes(final String url) throws IOException {
@@ -59,7 +73,7 @@ public class HttpResponse {
 	}
 
 	public void doResponse(final DataOutputStream dos) {
-		if(status == STATUS_OK) {
+		if (status == STATUS_OK) {
 			response200Header(dos);
 		}
 
@@ -75,6 +89,9 @@ public class HttpResponse {
 			dos.writeBytes("HTTP/1.1 200 OK \r\n");
 			dos.writeBytes("Content-Type: " + contentType + ";charset=utf-8\r\n");
 			dos.writeBytes("Content-Length: " + body.length + "\r\n");
+
+			setCookie(dos);
+
 			dos.writeBytes("\r\n");
 		} catch (IOException e) {
 			logger.error(e.getMessage());
@@ -88,15 +105,27 @@ public class HttpResponse {
 			dos.writeBytes("Cache-Control: no-cache, no-store, must-revalidate\r\n");
 			dos.writeBytes("Pragma: no-cache\r\n");
 			dos.writeBytes("Expires: 0\r\n");
+
+			setCookie(dos);
+
 			dos.writeBytes("\r\n");
 		} catch (IOException e) {
 			logger.error(e.getMessage());
 		}
 	}
 
+	private void setCookie(DataOutputStream dos) throws IOException {
+		String cookie = model.get("Cookie");
+		if (Objects.nonNull(cookie)) {
+			dos.writeBytes("Set-Cookie: sid=" + cookie + "; Path=/");
+		}
+	}
+
 	private void responseBody(final DataOutputStream dos, final byte[] body) {
 		try {
-			dos.write(body, 0, body.length);
+			if(Objects.nonNull(body)) {
+				dos.write(body, 0, body.length);
+			}
 			dos.flush();
 		} catch (IOException e) {
 			logger.error(e.getMessage());
