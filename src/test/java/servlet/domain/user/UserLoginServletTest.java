@@ -21,7 +21,12 @@ class UserLoginServletTest {
 
 	@BeforeAll
 	static void init() {
-		User user = new User("tester", "1234", "testName", "test@test");
+		User user = User.builder()
+			.userId("tester")
+			.password("1234")
+			.name("testName")
+			.email("test@test")
+			.build();
 		Database.addUser(user);
 	}
 
