@@ -2,6 +2,7 @@ package servlet.domain.user;
 
 import java.util.Map;
 import java.util.Optional;
+import java.util.UUID;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,6 +13,7 @@ import db.Database;
 import model.user.User;
 import servlet.domain.user.exception.IncorrectPasswordException;
 import servlet.domain.user.exception.UserNotExistException;
+import session.SessionStorage;
 
 @MyMapping("/user/login")
 public class UserLoginServlet implements Servlet {
@@ -32,6 +34,11 @@ public class UserLoginServlet implements Servlet {
 			logger.info(exception.getMessage());
 			return "/user/login_failed.html";
 		}
+
+		String sessionId = UUID.randomUUID().toString();
+		SessionStorage.setSession(sessionId,userId);
+		model.put("Cookie", sessionId);
+		logger.info("user sessionId: {}", sessionId);
 
 		return "redirect:/index.html";
 	}
