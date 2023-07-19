@@ -25,8 +25,7 @@ public class UserCreateServlet implements Servlet {
 	public String execute(Map<String, String> model) {
 		User user = UserFactory.createUser(model);
 
-		NamedLock namedLocks = new NamedLock();
-		Lock lock = namedLocks.getLock(user.getName());
+		Lock lock = NamedLock.getLock(user.getName());
 
 		lock.lock();
 		try {
