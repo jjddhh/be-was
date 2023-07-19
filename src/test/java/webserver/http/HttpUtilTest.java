@@ -14,10 +14,30 @@ import webserver.http.util.HttpUtil;
 class HttpUtilTest {
 
 	@Test
-	@DisplayName("요청 Content 받아오기")
+	@DisplayName("Body 없는 요청 Content 받아오기")
 	public void getContent() throws IOException {
 		// given
 		String expectedContent = "Hello, World!" + System.lineSeparator();
+		InputStream inputStream = new ByteArrayInputStream(expectedContent.getBytes("UTF-8"));
+		BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
+
+		// when
+		String actualContent = HttpUtil.getContent(bufferedReader);
+
+		// then
+		assertThat(actualContent).isEqualTo(expectedContent);
+	}
+
+	@Test
+	@DisplayName("Body 있는 요청 Content 받아오기")
+	public void getContentIncludingBody() throws IOException {
+		// given
+		String body = "It's body";
+		String expectedContent = "Hello, World!" + System.lineSeparator()
+			+ "Content-Length: " + body.getBytes().length + System.lineSeparator()
+			+ System.lineSeparator()
+			+ body;
+
 		InputStream inputStream = new ByteArrayInputStream(expectedContent.getBytes("UTF-8"));
 		BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
 
