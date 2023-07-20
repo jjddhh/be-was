@@ -4,6 +4,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.io.*;
+import java.util.Map;
 
 import static org.assertj.core.api.Assertions.*;
 
@@ -201,5 +202,37 @@ class HttpUtilTest {
 		// when then
 		assertThatThrownBy(() -> HttpUtil.getContentType(header))
 			.isInstanceOf(InvalidRequestException.class);
+	}
+
+	@Test
+	@DisplayName("getCookie 성공")
+	void getCookie() {
+		// given
+		String header = "GET /index.html HTTP/1.1\n" +
+			"Host: localhost:8080\n" +
+			"Connection: keep-alive\n" +
+			"Cookie: sid=123456";
+
+		// when
+		Map<String, String> cookies = HttpUtil.getCookies(header);
+		String sid = cookies.get("sid");
+
+		// then
+		assertThat(sid).isEqualTo("123456");
+	}
+	
+	@Test
+	@DisplayName("Cookie 없는 경우")
+	void getEmptyCookie() {
+	    // given
+		String header = "GET /index.html HTTP/1.1\n" +
+			"Host: localhost:8080\n" +
+			"Connection: keep-alive\n";
+
+		// when
+		Map<String, String> cookies = HttpUtil.getCookies(header);
+
+		// then
+		assertThat(cookies).isEqualTo(null);
 	}
 }
