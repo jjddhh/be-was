@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Test;
 
 import db.Database;
 import servlet.domain.user.exception.AlreadyExistUserException;
+import webserver.http.HttpRequest;
 
 class UserCreateServletTest {
 
@@ -27,10 +28,13 @@ class UserCreateServletTest {
         model.put("name", "testName");
         model.put("email", "test@test.com");
 
+        HttpRequest httpRequest = new HttpRequest();
+        httpRequest.setModel(model);
+
         UserCreateServlet userCreateServlet = new UserCreateServlet();
 
         // when
-        String result = userCreateServlet.execute(model);
+        String result = userCreateServlet.execute(httpRequest);
 
         // then
         Assertions.assertThat(result).isEqualTo("redirect:/index.html");
@@ -46,11 +50,14 @@ class UserCreateServletTest {
         model.put("name", "testName");
         model.put("email", "test@test.com");
 
+        HttpRequest httpRequest = new HttpRequest();
+        httpRequest.setModel(model);
+
         UserCreateServlet userCreateServlet = new UserCreateServlet();
-        userCreateServlet.execute(model);
+        userCreateServlet.execute(httpRequest);
 
         // when then
-        Assertions.assertThatThrownBy(() -> userCreateServlet.execute(model))
+        Assertions.assertThatThrownBy(() -> userCreateServlet.execute(httpRequest))
                 .isInstanceOf(AlreadyExistUserException.class);
     }
 }

@@ -15,14 +15,18 @@ public class HttpRequest {
     private static final String INTER_PARAM_SEPARATOR = "[&]";
     private static final String INTRA_PARAM_SEPARATOR = "[=]";
 
-    private final String header;
-    private final String body;
-    private final String method;
-    private final String contentType;
-    private final String pathParam;
-    private final String path;
-    private final String param;
-    private final Map<String, String> model;
+    private String header;
+    private String body;
+    private String method;
+    private String contentType;
+    private String pathParam;
+    private String path;
+    private String param;
+    private Map<String, String> cookies;
+    private Map<String, String> model;
+
+    public HttpRequest() {
+    }
 
     public HttpRequest(final BufferedReader reader) throws IOException {
         this(HttpUtil.getContent(reader));
@@ -34,12 +38,13 @@ public class HttpRequest {
         this.method = HttpUtil.getMethod(header);
         this.contentType = HttpUtil.getContentType(header);
         this.pathParam = HttpUtil.getPathParam(header);
+        this.cookies = HttpUtil.getCookies(header);
         this.path = HttpUtil.getPath(pathParam);
         this.param = HttpUtil.getParam(pathParam);
-        this.model = getModel();
+        this.model = createModel();
     }
 
-    public Map<String, String> getModel() {
+    public Map<String, String> createModel() {
         if (method.equals(GET)) {
             return parseToModel(param);
         }
@@ -72,5 +77,17 @@ public class HttpRequest {
 
     public String getPath() {
         return path;
+    }
+
+    public Map<String, String> getModel() {
+        return model;
+    }
+
+    public Map<String, String> getCookies() {
+        return cookies;
+    }
+
+    public void setModel(Map<String, String> model) {
+        this.model = model;
     }
 }

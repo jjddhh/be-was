@@ -23,6 +23,6 @@ class SessionStorageTest {
         SessionStorage.setSession(sessionId, userId);
 
         //then
-        Assertions.assertThat(SessionStorage.isLoginUser(sessionId)).isTrue();
+        Assertions.assertThat(SessionStorage.getSessionUserId(sessionId).isPresent()).isEqualTo(true);
     }
 }
