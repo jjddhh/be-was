@@ -1,4 +1,4 @@
-package servlet.domain;
+package servlet.domain.html;
 
 import container.annotation.MyMapping;
 import container.annotation.ResponseBody;
@@ -18,11 +18,14 @@ public class IndexServlet implements Servlet {
 
     @Override
     public String execute(HttpRequest httpRequest) {
-        Map<String, String> cookies = httpRequest.getCookies();
-        String sid = cookies.get("sid");
-
         StringBuilder htmlBuilder = new StringBuilder();
 
+        buildIndexHtml(httpRequest, htmlBuilder);
+
+        return htmlBuilder.toString();
+    }
+
+    private static void buildIndexHtml(HttpRequest httpRequest, StringBuilder htmlBuilder) {
         htmlBuilder.append("<!DOCTYPE html>\n");
         htmlBuilder.append("<html lang=\"kr\">\n");
         htmlBuilder.append("    <head>\n");
@@ -89,19 +92,16 @@ public class IndexServlet implements Servlet {
 
         String loginPart = "                        <li><a href=\"user/login.html\" role=\"button\">로그인</a></li>\n";
 
-        if(Objects.nonNull(sid)) {
-            Optional<String> loginUser = SessionStorage.isLoginUser(sid);
-            if(loginUser.isPresent()) {
-                String userId = loginUser.get();
-                Optional<User> userById = Database.findUserById(userId);
-                if(userById.isPresent()) {
-                    loginPart = "                        <li><a>" +  userId + " 님</a></li>\n";
-                }
-            }
+        Map<String, String> cookies = httpRequest.getCookies();
+        String sid = cookies.get("sid");
+
+        if (isLoginUser(sid)) {
+            Optional<String> sessionUserId = SessionStorage.getSessionUserId(sid);
+            loginPart = "                        <li><a>" +  sessionUserId.get() + " 님</a></li>\n";
         }
 
         htmlBuilder.append(loginPart);
-        
+
         htmlBuilder.append("                        <li><a href=\"user/form.html\" role=\"button\">회원가입</a></li>\n");
         htmlBuilder.append("                        <li><a href=\"#\" role=\"button\">로그아웃</a></li>\n");
         htmlBuilder.append("                        <li><a href=\"#\" role=\"button\">개인정보수정</a></li>\n");
@@ -176,10 +176,20 @@ public class IndexServlet implements Servlet {
         htmlBuilder.append("        <script src=\"js/scripts.js\"></script>\n");
         htmlBuilder.append("    </body>\n");
         htmlBuilder.append("</html>\n");
+    }
 
-        System.out.println("\n\n IndexServlet");
-        System.out.println(loginPart + "\n\n");
+    private static boolean isLoginUser(String sid) {
+        if(Objects.nonNull(sid)) {
+            Optional<String> loginUser = SessionStorage.getSessionUserId(sid);
+            if(loginUser.isPresent()) {
+                String userId = loginUser.get();
+                Optional<User> userById = Database.findUserById(userId);
+                if(userById.isPresent()) {
+                    return true;
+                }
+            }
+        }
 
-        return htmlBuilder.toString();
+        return false;
     }
 }

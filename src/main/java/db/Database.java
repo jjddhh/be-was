@@ -3,6 +3,7 @@ package db;
 import com.google.common.collect.Maps;
 import model.user.User;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Optional;
@@ -25,5 +26,13 @@ public class Database {
 
     public static void flush() {
         users = Maps.newHashMap();
+    }
+
+    public static int getUserCount() {
+        return users.size();
+    }
+
+    public static ArrayList<User> getUserList() {
+        return new ArrayList<>(users.values());
     }
 }

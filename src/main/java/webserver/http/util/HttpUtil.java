@@ -50,7 +50,8 @@ public class HttpUtil {
 	}
 
 	public static String extractBody(String content) {
-		String[] lines = content.split("\\r?\\n");
+		String decodedContent = URLDecoder.decode(content, StandardCharsets.UTF_8);
+		String[] lines = decodedContent.split("\\r?\\n");
 
 		int emptyLineIndex = 0;
 		for (int i = 0; i < lines.length; i++) {
