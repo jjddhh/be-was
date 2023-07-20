@@ -12,7 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import container.MyContainer;
-import container.Servlet;
+import servlet.Servlet;
 import webserver.http.HttpRequest;
 import webserver.http.HttpResponse;
 
@@ -57,19 +57,19 @@ public class RequestHandler implements Runnable {
 
 	private HttpResponse processServlet(Servlet servlet, HttpRequest httpRequest) throws IOException {
 		Annotation[] declaredAnnotations = servlet.getClass().getDeclaredAnnotations();
-		Map<String, String> model = httpRequest.getModel();
+//		Map<String, String> model = httpRequest.getModel();
 
-		String result = servlet.execute(model);
+		String result = servlet.execute(httpRequest);
 
 		if (isResponseBody(declaredAnnotations)) {
-			return HttpResponse.createDefaultResponse(result, httpRequest.getContentType(), model);
+			return HttpResponse.createDefaultResponse(result, httpRequest.getContentType(), httpRequest.getModel());
 		}
 
 		if (isRedirect(result)) {
-			return HttpResponse.createRedirectResponse(result, model);
+			return HttpResponse.createRedirectResponse(result, httpRequest.getModel());
 		}
 
-		return HttpResponse.createResourceResponse(result, httpRequest.getContentType(), model);
+		return HttpResponse.createResourceResponse(result, httpRequest.getContentType(), httpRequest.getModel());
 	}
 
 	private static boolean isResponseBody(Annotation[] declaredAnnotations) {

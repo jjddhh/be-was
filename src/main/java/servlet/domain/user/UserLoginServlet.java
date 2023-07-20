@@ -7,13 +7,14 @@ import java.util.UUID;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import container.Servlet;
+import servlet.Servlet;
 import container.annotation.MyMapping;
 import db.Database;
 import model.user.User;
 import servlet.domain.user.exception.IncorrectPasswordException;
 import servlet.domain.user.exception.UserNotExistException;
 import session.SessionStorage;
+import webserver.http.HttpRequest;
 
 @MyMapping("/user/login")
 public class UserLoginServlet implements Servlet {
@@ -21,7 +22,8 @@ public class UserLoginServlet implements Servlet {
 	private static final Logger logger = LoggerFactory.getLogger(UserLoginServlet.class);
 
 	@Override
-	public String execute(Map<String, String> model) {
+	public String execute(HttpRequest httpRequest) {
+		Map<String, String> model = httpRequest.getModel();
 		String userId = model.get("userId");
 		String password = model.get("password");
 

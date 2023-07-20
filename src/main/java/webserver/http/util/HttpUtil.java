@@ -9,9 +9,11 @@ import webserver.exception.InvalidRequestException;
 import java.io.*;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 public class HttpUtil {
 
@@ -153,5 +155,20 @@ public class HttpUtil {
 		String method = splitContent[0];
 
 		return method;
+	}
+
+	public static Map<String, String> getCookies(final String headers) {
+		Map<String, String> headerMap = parseHeaders(headers);
+		String cookies = headerMap.get("Cookie");
+
+		if(Objects.isNull(cookies)) return null;
+
+		return Arrays.stream(cookies.split(";"))
+				.map(String::trim)
+				.map(s -> s.split("="))
+				.collect(Collectors.toMap(
+						a -> a[0],  // key
+						a -> a[1]   // value
+				));
 	}
 }

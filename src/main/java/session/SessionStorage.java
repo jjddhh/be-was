@@ -9,9 +9,9 @@ public class SessionStorage {
 
 	private static Map<String, String> session = Maps.newHashMap();
 
-	public static boolean isLoginUser(String sessionId) {
+	public static Optional<String> isLoginUser(String sessionId) {
 		Optional<String> optionalSocialId = Optional.ofNullable(session.get(sessionId));
-		return optionalSocialId.isPresent();
+		return optionalSocialId;
 	}
 
 	public static void setSession(String sessionId, String userId) {

@@ -16,6 +16,7 @@ import db.Database;
 import model.user.User;
 import servlet.domain.user.exception.AlreadyExistUserException;
 import servlet.domain.user.exception.IncorrectPasswordException;
+import webserver.http.HttpRequest;
 
 class UserLoginServletTest {
 
@@ -38,10 +39,13 @@ class UserLoginServletTest {
 		model.put("userId", "tester");
 		model.put("password", "1234");
 
+		HttpRequest httpRequest = new HttpRequest();
+		httpRequest.setModel(model);
+
 		UserLoginServlet userLoginServlet = new UserLoginServlet();
 
 		// when
-		String result = userLoginServlet.execute(model);
+		String result = userLoginServlet.execute(httpRequest);
 
 		// then
 		assertThat(result).isEqualTo("redirect:/index.html");
@@ -55,10 +59,13 @@ class UserLoginServletTest {
 		model.put("userId", "tester");
 		model.put("password", "12345");
 
+		HttpRequest httpRequest = new HttpRequest();
+		httpRequest.setModel(model);
+
 		UserLoginServlet userLoginServlet = new UserLoginServlet();
 
 		// when
-		String result = userLoginServlet.execute(model);
+		String result = userLoginServlet.execute(httpRequest);
 
 		// then
 		assertThat(result).isEqualTo("/user/login_failed.html");
@@ -72,10 +79,13 @@ class UserLoginServletTest {
 		model.put("userId", "testee");
 		model.put("password", "1234");
 
+		HttpRequest httpRequest = new HttpRequest();
+		httpRequest.setModel(model);
+
 		UserLoginServlet userLoginServlet = new UserLoginServlet();
 
 		// when
-		String result = userLoginServlet.execute(model);
+		String result = userLoginServlet.execute(httpRequest);
 
 		// then
 		assertThat(result).isEqualTo("/user/login_failed.html");
