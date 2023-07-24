@@ -1,6 +1,6 @@
 package webserver.http;
 
-public enum Extension {
+public enum MIME {
 
 	HTML("html"), CSS("css"), JS("js"),
 	ICO("ico"), PNG("png"), JPG("jpg"),
@@ -8,7 +8,7 @@ public enum Extension {
 
 	private final String value;
 
-	private Extension(String value) {
+	private MIME(String value) {
 		this.value = value;
 	}
 

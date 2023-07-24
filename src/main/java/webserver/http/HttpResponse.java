@@ -10,6 +10,7 @@ import java.util.Objects;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import servlet.domain.exception.NotFoundException;
 import webserver.RequestHandler;
 import webserver.exception.InvalidRequestException;
 import webserver.http.util.FileUtil;
@@ -18,6 +19,8 @@ public class HttpResponse {
 
 	private static final Integer STATUS_OK = 200;
 	private static final Integer STATUS_REDIRECT = 303;
+	private static final Integer STATUS_NOT_FOUND = 404;
+	private static final Integer STATUS_METHOD_NOT_ALLOWED = 405;
 	private static final Logger logger = LoggerFactory.getLogger(RequestHandler.class);
 
 	private final int status;
@@ -25,6 +28,10 @@ public class HttpResponse {
 	private String contentType;
 	private String redirectUrl;
 	private Map<String, String> model;
+
+	public HttpResponse(final int status) {
+		this.status = status;
+	}
 
 	public HttpResponse(final int status, final byte[] body, final String contentType,
 		final Map<String, String> model) {
@@ -58,10 +65,20 @@ public class HttpResponse {
 		final String contentType,
 		final Map<String, String> model) throws IOException {
 
-		byte[] body = getResourceBytes(path);
+		byte[] body = null;
+		try {
+			body = getResourceBytes(path);
+		} catch (InvalidRequestException exception) {
+			return new HttpResponse(STATUS_NOT_FOUND);
+		}
 
 		return new HttpResponse(STATUS_OK, body, contentType, model);
 	}
+
+//	public static HttpResponse createErrorResponse() throws IOException {
+//		byte[] body = getResourceBytes("/error.html");
+//		return new HttpResponse(STATUS_NOT_FOUND, body, "text/html", null);
+//	}
 
 	private static byte[] getResourceBytes(final String url) throws IOException {
 		if (FileUtil.isFileRequest(url)) {
@@ -79,6 +96,14 @@ public class HttpResponse {
 
 		if (status == STATUS_REDIRECT) {
 			response303Header(dos, redirectUrl);
+		}
+
+		if (status == STATUS_NOT_FOUND) {
+			response404Header(dos);
+		}
+
+		if (status == STATUS_METHOD_NOT_ALLOWED) {
+			response405Header(dos);
 		}
 
 		responseBody(dos, body);
@@ -109,6 +134,22 @@ public class HttpResponse {
 			setCookie(dos);
 
 			dos.writeBytes("\r\n");
+		} catch (IOException e) {
+			logger.error(e.getMessage());
+		}
+	}
+
+	private void response404Header(DataOutputStream dos) {
+		try {
+			dos.writeBytes("HTTP/1.1 404 NOT_FOUND \r\n");
+		} catch (IOException e) {
+			logger.error(e.getMessage());
+		}
+	}
+
+	private void response405Header(DataOutputStream dos) {
+		try {
+			dos.writeBytes("HTTP/1.1 405 METHOD_NOT_ALLOWED \r\n");
 		} catch (IOException e) {
 			logger.error(e.getMessage());
 		}

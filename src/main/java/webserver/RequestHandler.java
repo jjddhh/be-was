@@ -5,7 +5,6 @@ import java.lang.annotation.Annotation;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
-import java.util.Map;
 
 import container.annotation.ResponseBody;
 import org.slf4j.Logger;
@@ -57,7 +56,6 @@ public class RequestHandler implements Runnable {
 
 	private HttpResponse processServlet(Servlet servlet, HttpRequest httpRequest) throws IOException {
 		Annotation[] declaredAnnotations = servlet.getClass().getDeclaredAnnotations();
-//		Map<String, String> model = httpRequest.getModel();
 
 		String result = servlet.execute(httpRequest);
 
