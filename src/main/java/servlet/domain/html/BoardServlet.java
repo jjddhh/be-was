@@ -11,7 +11,7 @@ import servlet.Servlet;
 import session.SessionStorage;
 import webserver.http.HttpRequest;
 
-@MyMapping("/board/write.html")
+@MyMapping(url = "/board/write.html")
 public class BoardServlet implements Servlet {
 
 	@Override

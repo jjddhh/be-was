@@ -11,11 +11,10 @@ import db.UserDatabase;
 import model.board.Board;
 import model.user.User;
 import servlet.Servlet;
-import servlet.domain.exception.NotFoundException;
 import session.SessionStorage;
 import webserver.http.HttpRequest;
 
-@MyMapping("/board/show")
+@MyMapping(url = "/board/show")
 @ResponseBody
 public class BoardShowServlet implements Servlet {
 

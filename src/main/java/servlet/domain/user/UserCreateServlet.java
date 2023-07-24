@@ -16,7 +16,7 @@ import model.user.UserFactory;
 import servlet.domain.user.exception.AlreadyExistUserException;
 import webserver.http.HttpRequest;
 
-@MyMapping("/user/create")
+@MyMapping(url = "/user/create")
 public class UserCreateServlet implements Servlet {
 
 	private static final Logger logger = LoggerFactory.getLogger(UserCreateServlet.class);

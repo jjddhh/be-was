@@ -13,8 +13,9 @@ import model.user.User;
 import servlet.Servlet;
 import session.SessionStorage;
 import webserver.http.HttpRequest;
+import webserver.http.Method;
 
-@MyMapping("/board/write")
+@MyMapping(url = "/board/write", method = Method.POST)
 public class BoardWriteServlet implements Servlet {
 
 	@Override
@@ -23,14 +24,12 @@ public class BoardWriteServlet implements Servlet {
 		Map<String, String> param = httpRequest.getModel();
 		String sid = cookies.get("sid");
 		if (isLoginUser(sid)) {
-			System.out.println("\n\n\n\n\n\n\n\n\n\n");
 			Optional<String> sessionUserId = SessionStorage.getSessionUserId(sid);
 			sessionUserId.ifPresent(userId -> {
 				Optional<User> userById = UserDatabase.findUserById(userId);
                 userById.ifPresent(user -> {
 					Board board = BoardFactory.createBoard(param);
 					BoardDatabase.save(board);
-					System.out.println(board);
                 });
 			});
 		}

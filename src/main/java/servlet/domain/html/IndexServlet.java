@@ -15,7 +15,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
-@MyMapping("/index.html")
+@MyMapping(url = "/index.html")
 @ResponseBody
 public class IndexServlet implements Servlet {
 

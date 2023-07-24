@@ -6,12 +6,14 @@ import java.net.Socket;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 
+import container.Mapping;
 import container.annotation.ResponseBody;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import container.MyContainer;
 import servlet.Servlet;
+import webserver.exception.InvalidRequestException;
 import webserver.http.HttpRequest;
 import webserver.http.HttpResponse;
 
@@ -34,9 +36,13 @@ public class RequestHandler implements Runnable {
 			 BufferedOutputStream bufferedOut = new BufferedOutputStream(connection.getOutputStream());
 			 DataOutputStream dos = new DataOutputStream(bufferedOut)) {
 
-			HttpRequest httpRequest = new HttpRequest(reader);
-
-			HttpResponse httpResponse = dispatchRequest(httpRequest);
+			HttpResponse httpResponse = null;
+			try {
+				HttpRequest httpRequest = new HttpRequest(reader);
+				httpResponse = dispatchRequest(httpRequest);
+			} catch (InvalidRequestException e) {
+				httpResponse = HttpResponse.createBadRequestResponse();
+			}
 
 			httpResponse.doResponse(dos);
 		} catch (IOException e) {
@@ -45,7 +51,8 @@ public class RequestHandler implements Runnable {
 	}
 
 	private HttpResponse dispatchRequest(HttpRequest httpRequest) throws IOException {
-		Object mappingClass = MyContainer.getMappingClass(httpRequest.getPath());
+		Mapping mapping = new Mapping(httpRequest.getPath(), httpRequest.getMethod());
+		Object mappingClass = MyContainer.getMappingClass(mapping);
 
 		if (mappingClass instanceof Servlet) {
 			return processServlet((Servlet) mappingClass, httpRequest);

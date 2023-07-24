@@ -14,7 +14,7 @@ import servlet.Servlet;
 import session.SessionStorage;
 import webserver.http.HttpRequest;
 
-@MyMapping("/user/list.html")
+@MyMapping(url = "/user/list.html")
 @ResponseBody
 public class UserListServlet implements Servlet {
 

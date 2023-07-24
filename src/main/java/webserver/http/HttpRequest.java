@@ -1,5 +1,6 @@
 package webserver.http;
 
+import webserver.exception.InvalidRequestException;
 import webserver.http.util.HttpUtil;
 
 import java.io.BufferedReader;
@@ -17,7 +18,7 @@ public class HttpRequest {
 
     private String header;
     private String body;
-    private String method;
+    private Method method;
     private String contentType;
     private String pathParam;
     private String path;
@@ -45,7 +46,7 @@ public class HttpRequest {
     }
 
     public Map<String, String> createModel() {
-        if (method.equals(GET)) {
+        if (method == Method.GET) {
             return parseToModel(param);
         }
 
@@ -61,6 +62,7 @@ public class HttpRequest {
         Map<String, String> queryPair = new HashMap<>();
         for (String pair : parsedParam) {
             String[] splitPair = pair.split(INTRA_PARAM_SEPARATOR);
+            if(splitPair.length < 2) throw InvalidRequestException.Exception;
             queryPair.put(splitPair[0], splitPair[1]);
         }
 
@@ -69,6 +71,10 @@ public class HttpRequest {
 
     private boolean isEmptyValue(String value) {
         return Objects.isNull(value) || value.isEmpty();
+    }
+
+    public Method getMethod() {
+        return method;
     }
 
     public String getContentType() {

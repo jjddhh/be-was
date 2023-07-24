@@ -15,8 +15,9 @@ import servlet.domain.user.exception.IncorrectPasswordException;
 import servlet.domain.user.exception.UserNotExistException;
 import session.SessionStorage;
 import webserver.http.HttpRequest;
+import webserver.http.Method;
 
-@MyMapping("/user/login")
+@MyMapping(url = "/user/login", method = Method.POST)
 public class UserLoginServlet implements Servlet {
 
 	private static final Logger logger = LoggerFactory.getLogger(UserLoginServlet.class);

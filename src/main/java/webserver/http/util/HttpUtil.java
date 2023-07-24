@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 
 import webserver.RequestHandler;
 import webserver.exception.InvalidRequestException;
+import webserver.http.Method;
 
 import java.io.*;
 import java.net.URLDecoder;
@@ -151,11 +152,10 @@ public class HttpUtil {
 		return headerMap;
 	}
 
-	public static String getMethod(String header) {
+	public static Method getMethod(String header) {
 		String[] splitContent = header.split(" ");
 		String method = splitContent[0];
-
-		return method;
+		return Method.valueOf(method);
 	}
 
 	public static Map<String, String> getCookies(final String headers) {
