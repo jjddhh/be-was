@@ -9,7 +9,7 @@ import org.slf4j.LoggerFactory;
 
 import servlet.Servlet;
 import container.annotation.MyMapping;
-import db.Database;
+import db.UserDatabase;
 import model.user.User;
 import servlet.domain.user.exception.IncorrectPasswordException;
 import servlet.domain.user.exception.UserNotExistException;
@@ -27,7 +27,7 @@ public class UserLoginServlet implements Servlet {
 		String userId = model.get("userId");
 		String password = model.get("password");
 
-		Optional<User> userById = Database.findUserById(userId);
+		Optional<User> userById = UserDatabase.findUserById(userId);
 
 		try {
 			User user = getUser(userById);

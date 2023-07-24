@@ -5,7 +5,7 @@ import java.net.Socket;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import db.Database;
+import db.UserDatabase;
 import model.user.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,7 +34,7 @@ public class WebServer {
 				.name("testName")
 				.email("test@test")
 				.build();
-		Database.addUser(user);
+		UserDatabase.addUser(user);
 
 		ExecutorService executor = Executors.newFixedThreadPool(MAX_THREADS);
 

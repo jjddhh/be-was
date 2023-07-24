@@ -8,7 +8,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import container.annotation.MyMapping;
 import container.annotation.ResponseBody;
-import db.Database;
+import db.UserDatabase;
 import model.user.User;
 import servlet.Servlet;
 import session.SessionStorage;
@@ -120,7 +120,7 @@ public class UserListServlet implements Servlet {
 		htmlBuilder.append("              <tbody>\n");
 
 		StringBuilder userListBuilder = new StringBuilder();
-		List<User> userList = Database.getUserList();
+		List<User> userList = UserDatabase.getUserList();
 
 		AtomicInteger userCount = new AtomicInteger(1);
 		userList.forEach(user -> {
@@ -251,7 +251,7 @@ public class UserListServlet implements Servlet {
 			Optional<String> loginUser = SessionStorage.getSessionUserId(sid);
 			if(loginUser.isPresent()) {
 				String userId = loginUser.get();
-				Optional<User> userById = Database.findUserById(userId);
+				Optional<User> userById = UserDatabase.findUserById(userId);
 				if(userById.isPresent()) {
 					return true;
 				}

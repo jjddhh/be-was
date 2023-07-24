@@ -6,7 +6,7 @@ import java.util.Optional;
 
 import container.annotation.MyMapping;
 import container.annotation.ResponseBody;
-import db.Database;
+import db.UserDatabase;
 import model.user.User;
 import servlet.Servlet;
 import session.SessionStorage;
@@ -164,7 +164,7 @@ public class HomeServlet implements Servlet {
 		htmlBuilder.append("                            </ul>\n");
 		htmlBuilder.append("                        </div>\n");
 		htmlBuilder.append("                        <div class=\"col-md-3 qna-write\">\n");
-		htmlBuilder.append("                            <a href=\"./qna/write.html\" class=\"btn btn-primary pull-right\" role=\"button\">글쓰기</a>\n");
+		htmlBuilder.append("                            <a href=\"./board/write.html\" class=\"btn btn-primary pull-right\" role=\"button\">글쓰기</a>\n");
 		htmlBuilder.append("                        </div>\n");
 		htmlBuilder.append("                    </div>\n");
 		htmlBuilder.append("                </div>\n");
@@ -183,7 +183,7 @@ public class HomeServlet implements Servlet {
 			Optional<String> loginUser = SessionStorage.getSessionUserId(sid);
 			if(loginUser.isPresent()) {
 				String userId = loginUser.get();
-				Optional<User> userById = Database.findUserById(userId);
+				Optional<User> userById = UserDatabase.findUserById(userId);
 				if(userById.isPresent()) {
 					return true;
 				}

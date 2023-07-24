@@ -2,12 +2,15 @@ package servlet.domain.html;
 
 import container.annotation.MyMapping;
 import container.annotation.ResponseBody;
-import db.Database;
+import db.BoardDatabase;
+import db.UserDatabase;
+import model.board.Board;
 import model.user.User;
 import servlet.Servlet;
 import session.SessionStorage;
 import webserver.http.HttpRequest;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
@@ -113,42 +116,29 @@ public class IndexServlet implements Servlet {
         htmlBuilder.append("            <div class=\"col-md-12 col-sm-12 col-lg-10 col-lg-offset-1\">\n");
         htmlBuilder.append("                <div class=\"panel panel-default qna-list\">\n");
         htmlBuilder.append("                    <ul class=\"list\">\n");
-        htmlBuilder.append("                        <li>\n");
-        htmlBuilder.append("                            <div class=\"wrap\">\n");
-        htmlBuilder.append("                                <div class=\"main\">\n");
-        htmlBuilder.append("                                    <strong class=\"subject\">\n");
-        htmlBuilder.append("                                        <a href=\"./qna/show.html\">국내에서 Ruby on Rails와 Play가 활성화되기 힘든 이유는 뭘까?</a>\n");
-        htmlBuilder.append("                                    </strong>\n");
-        htmlBuilder.append("                                    <div class=\"auth-info\">\n");
-        htmlBuilder.append("                                        <i class=\"icon-add-comment\"></i>\n");
-        htmlBuilder.append("                                        <span class=\"time\">2016-01-15 18:47</span>\n");
-        htmlBuilder.append("                                        <a href=\"./user/profile.html\" class=\"author\">자바지기</a>\n");
-        htmlBuilder.append("                                    </div>\n");
-        htmlBuilder.append("                                    <div class=\"reply\" title=\"댓글\">\n");
-        htmlBuilder.append("                                        <i class=\"icon-reply\"></i>\n");
-        htmlBuilder.append("                                        <span class=\"point\">8</span>\n");
-        htmlBuilder.append("                                    </div>\n");
-        htmlBuilder.append("                                </div>\n");
-        htmlBuilder.append("                            </div>\n");
-        htmlBuilder.append("                        </li>\n");
-        htmlBuilder.append("                        <li>\n");
-        htmlBuilder.append("                            <div class=\"wrap\">\n");
-        htmlBuilder.append("                                <div class=\"main\">\n");
-        htmlBuilder.append("                                    <strong class=\"subject\">\n");
-        htmlBuilder.append("                                        <a href=\"./qna/show.html\">runtime 에 reflect 발동 주체 객체가 뭔지 알 방법이 있을까요?</a>\n");
-        htmlBuilder.append("                                    </strong>\n");
-        htmlBuilder.append("                                    <div class=\"auth-info\">\n");
-        htmlBuilder.append("                                        <i class=\"icon-add-comment\"></i>\n");
-        htmlBuilder.append("                                        <span class=\"time\">2016-01-05 18:47</span>\n");
-        htmlBuilder.append("                                        <a href=\"./user/profile.html\" class=\"author\">김문수</a>\n");
-        htmlBuilder.append("                                    </div>\n");
-        htmlBuilder.append("                                    <div class=\"reply\" title=\"댓글\">\n");
-        htmlBuilder.append("                                        <i class=\"icon-reply\"></i>\n");
-        htmlBuilder.append("                                        <span class=\"point\">12</span>\n");
-        htmlBuilder.append("                                    </div>\n");
-        htmlBuilder.append("                                </div>\n");
-        htmlBuilder.append("                            </div>\n");
-        htmlBuilder.append("                        </li>\n");
+
+        List<Board> boardList = BoardDatabase.getList();
+        boardList.forEach(board -> {
+            htmlBuilder.append("                        <li>\n");
+            htmlBuilder.append("                            <div class=\"wrap\">\n");
+            htmlBuilder.append("                                <div class=\"main\">\n");
+            htmlBuilder.append("                                    <strong class=\"subject\">\n");
+            htmlBuilder.append("                                        <a href=\"./board/show.html\">").append(board.getContents()).append("</a>\n");
+            htmlBuilder.append("                                    </strong>\n");
+            htmlBuilder.append("                                    <div class=\"auth-info\">\n");
+            htmlBuilder.append("                                        <i class=\"icon-add-comment\"></i>\n");
+            htmlBuilder.append("                                        <span class=\"time\">").append(board.getCreatedAt()).append("</span>\n");
+            htmlBuilder.append("                                        <a href=\"./user/profile.html\" class=\"author\">").append(board.getWriter()).append("</a>\n");
+            htmlBuilder.append("                                    </div>\n");
+            htmlBuilder.append("                                    <div class=\"reply\" title=\"댓글\">\n");
+            htmlBuilder.append("                                        <i class=\"icon-reply\"></i>\n");
+            htmlBuilder.append("                                        <span class=\"point\">").append(board.getBoardId()).append("</span>\n");
+            htmlBuilder.append("                                    </div>\n");
+            htmlBuilder.append("                                </div>\n");
+            htmlBuilder.append("                            </div>\n");
+            htmlBuilder.append("                        </li>\n");
+        });
+
         htmlBuilder.append("                    </ul>\n");
         htmlBuilder.append("                    <div class=\"row\">\n");
         htmlBuilder.append("                        <div class=\"col-md-3\"></div>\n");
@@ -164,7 +154,7 @@ public class IndexServlet implements Servlet {
         htmlBuilder.append("                            </ul>\n");
         htmlBuilder.append("                        </div>\n");
         htmlBuilder.append("                        <div class=\"col-md-3 qna-write\">\n");
-        htmlBuilder.append("                            <a href=\"./qna/write.html\" class=\"btn btn-primary pull-right\" role=\"button\">글쓰기</a>\n");
+        htmlBuilder.append("                            <a href=\"./board/write.html\" class=\"btn btn-primary pull-right\" role=\"button\">글쓰기</a>\n");
         htmlBuilder.append("                        </div>\n");
         htmlBuilder.append("                    </div>\n");
         htmlBuilder.append("                </div>\n");
@@ -183,7 +173,7 @@ public class IndexServlet implements Servlet {
             Optional<String> loginUser = SessionStorage.getSessionUserId(sid);
             if(loginUser.isPresent()) {
                 String userId = loginUser.get();
-                Optional<User> userById = Database.findUserById(userId);
+                Optional<User> userById = UserDatabase.findUserById(userId);
                 if(userById.isPresent()) {
                     return true;
                 }

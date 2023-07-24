@@ -7,7 +7,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import db.Database;
+import db.UserDatabase;
 import servlet.domain.user.exception.AlreadyExistUserException;
 import webserver.http.HttpRequest;
 
@@ -15,7 +15,7 @@ class UserCreateServletTest {
 
     @BeforeEach
     void init() {
-        Database.flush();
+        UserDatabase.flush();
     }
 
     @Test

@@ -1,21 +1,15 @@
 package servlet.domain.user;
 
 import static org.assertj.core.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.*;
 
-import java.net.ServerSocket;
 import java.util.HashMap;
 
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import db.Database;
+import db.UserDatabase;
 import model.user.User;
-import servlet.domain.user.exception.AlreadyExistUserException;
-import servlet.domain.user.exception.IncorrectPasswordException;
 import webserver.http.HttpRequest;
 
 class UserLoginServletTest {
@@ -28,7 +22,7 @@ class UserLoginServletTest {
 			.name("testName")
 			.email("test@test")
 			.build();
-		Database.addUser(user);
+		UserDatabase.addUser(user);
 	}
 
 	@Test

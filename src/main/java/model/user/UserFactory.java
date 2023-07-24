@@ -1,4 +1,4 @@
-package model.user.factory;
+package model.user;
 
 import java.util.Map;
 
