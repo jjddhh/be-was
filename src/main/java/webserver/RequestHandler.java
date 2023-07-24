@@ -61,12 +61,12 @@ public class RequestHandler implements Runnable {
 
 		String result = servlet.execute(httpRequest);
 
-		if (isResponseBody(declaredAnnotations)) {
-			return HttpResponse.createDefaultResponse(result, httpRequest.getContentType(), httpRequest.getModel());
-		}
-
 		if (isRedirect(result)) {
 			return HttpResponse.createRedirectResponse(result, httpRequest.getModel());
+		}
+
+		if (isResponseBody(declaredAnnotations)) {
+			return HttpResponse.createDefaultResponse(result, httpRequest.getContentType(), httpRequest.getModel());
 		}
 
 		return HttpResponse.createResourceResponse(result, httpRequest.getContentType(), httpRequest.getModel());

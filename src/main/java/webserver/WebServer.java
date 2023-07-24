@@ -2,10 +2,13 @@ package webserver;
 
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.time.LocalDate;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import db.BoardDatabase;
 import db.UserDatabase;
+import model.board.Board;
 import model.user.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,6 +38,15 @@ public class WebServer {
 				.email("test@test")
 				.build();
 		UserDatabase.addUser(user);
+
+		Board board = Board.builder()
+				.createdAt(LocalDate.now())
+				.title("제목입니다")
+				.contents("내용")
+				.writer("me")
+				.build();
+		BoardDatabase.save(board);
+
 
 		ExecutorService executor = Executors.newFixedThreadPool(MAX_THREADS);
 

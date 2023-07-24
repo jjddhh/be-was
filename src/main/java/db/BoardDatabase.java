@@ -23,4 +23,8 @@ public class BoardDatabase {
 	public static List<Board> getList() {
 		return Lists.newArrayList(boards.values());
 	}
+
+	public static Board get(int boardId) {
+        return boards.get(boardId);
+    }
 }

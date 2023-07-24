@@ -123,7 +123,7 @@ public class IndexServlet implements Servlet {
             htmlBuilder.append("                            <div class=\"wrap\">\n");
             htmlBuilder.append("                                <div class=\"main\">\n");
             htmlBuilder.append("                                    <strong class=\"subject\">\n");
-            htmlBuilder.append("                                        <a href=\"./board/show.html\">").append(board.getContents()).append("</a>\n");
+            htmlBuilder.append("                                        <a href=\"./board/show?id=").append(board.getBoardId()).append("\">").append(board.getTitle()).append("</a>\n");
             htmlBuilder.append("                                    </strong>\n");
             htmlBuilder.append("                                    <div class=\"auth-info\">\n");
             htmlBuilder.append("                                        <i class=\"icon-add-comment\"></i>\n");
