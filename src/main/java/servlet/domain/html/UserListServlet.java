@@ -100,7 +100,7 @@ public class UserListServlet implements Servlet {
 		htmlBuilder.append("            <ul class=\"nav navbar-nav navbar-right\">\n");
 		htmlBuilder.append("                <li class=\"active\"><a href=\"../index.html\">Posts</a></li>\n");
 		htmlBuilder.append("                <li><a href=\"../user/login.html\" role=\"button\">로그인</a></li>\n");
-		htmlBuilder.append("                <li><a href=\"../user/write.html\" role=\"button\">회원가입</a></li>\n");
+		htmlBuilder.append("                <li><a href=\"../user/form.html\" role=\"button\">회원가입</a></li>\n");
 		htmlBuilder.append("                <li><a href=\"#\" role=\"button\">로그아웃</a></li>\n");
 		htmlBuilder.append("                <li><a href=\"#\" role=\"button\">개인정보수정</a></li>\n");
 		htmlBuilder.append("            </ul>\n");
@@ -211,7 +211,7 @@ public class UserListServlet implements Servlet {
 		htmlBuilder.append("            <ul class=\"nav navbar-nav navbar-right\">\n");
 		htmlBuilder.append("                <li class=\"active\"><a href=\"../index.html\">Posts</a></li>\n");
 		htmlBuilder.append("                <li><a href=\"../user/login.html\" role=\"button\">로그인</a></li>\n");
-		htmlBuilder.append("                <li><a href=\"../user/write.html\" role=\"button\">회원가입</a></li>\n");
+		htmlBuilder.append("                <li><a href=\"../user/form.html\" role=\"button\">회원가입</a></li>\n");
 		htmlBuilder.append("                <li><a href=\"#\" role=\"button\">로그아웃</a></li>\n");
 		htmlBuilder.append("                <li><a href=\"#\" role=\"button\">개인정보수정</a></li>\n");
 		htmlBuilder.append("            </ul>\n");
