@@ -13,16 +13,17 @@ import org.reflections.util.ClasspathHelper;
 import org.reflections.util.ConfigurationBuilder;
 
 import container.annotation.MyMapping;
+import webserver.http.Method;
 
 public class MyContainer {
 
 	private MyContainer() {
 	}
 
-	private static final Map<String, Object> mapper = new HashMap<>();
+	private static final Map<Mapping, Object> mapper = new HashMap<>();
 
-	public static Object getMappingClass(String path) {
-		return mapper.get(path);
+	public static Object getMappingClass(Mapping mapping) {
+		return mapper.get(mapping);
 	}
 
 	public static void start(Class<?> componentScanRoot) throws ReflectiveOperationException {
@@ -41,10 +42,16 @@ public class MyContainer {
 				if (annotation instanceof MyMapping) {
 					Constructor<?> constructor = clazz.getConstructor();
 					Object obj = constructor.newInstance();
-					String path = ((MyMapping)annotation).value();
-					mapper.put(path, obj);
+					Mapping mapping = createMapping((MyMapping) annotation);
+					mapper.put(mapping, obj);
 				}
 			}
 		}
+	}
+
+	public static Mapping createMapping(MyMapping annotation) {
+		String url = annotation.url();
+		Method method = annotation.method();
+		return new Mapping(url, method);
 	}
 }

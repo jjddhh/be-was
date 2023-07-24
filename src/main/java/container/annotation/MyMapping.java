@@ -1,5 +1,7 @@
 package container.annotation;
 
+import webserver.http.Method;
+
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -9,5 +11,7 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface MyMapping {
 
-	String value();
+	String url() default "";
+
+	Method method() default Method.GET;
 }
