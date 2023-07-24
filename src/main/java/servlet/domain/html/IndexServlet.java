@@ -102,7 +102,7 @@ public class IndexServlet implements Servlet {
 
         htmlBuilder.append(loginPart);
 
-        htmlBuilder.append("                        <li><a href=\"user/form.html\" role=\"button\">회원가입</a></li>\n");
+        htmlBuilder.append("                        <li><a href=\"user/write.html\" role=\"button\">회원가입</a></li>\n");
         htmlBuilder.append("                        <li><a href=\"#\" role=\"button\">로그아웃</a></li>\n");
         htmlBuilder.append("                        <li><a href=\"#\" role=\"button\">개인정보수정</a></li>\n");
         htmlBuilder.append("                    </ul>\n");
@@ -164,7 +164,7 @@ public class IndexServlet implements Servlet {
         htmlBuilder.append("                            </ul>\n");
         htmlBuilder.append("                        </div>\n");
         htmlBuilder.append("                        <div class=\"col-md-3 qna-write\">\n");
-        htmlBuilder.append("                            <a href=\"./qna/form.html\" class=\"btn btn-primary pull-right\" role=\"button\">질문하기</a>\n");
+        htmlBuilder.append("                            <a href=\"./qna/write.html\" class=\"btn btn-primary pull-right\" role=\"button\">글쓰기</a>\n");
         htmlBuilder.append("                        </div>\n");
         htmlBuilder.append("                    </div>\n");
         htmlBuilder.append("                </div>\n");
