@@ -10,7 +10,6 @@ import java.util.Objects;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import servlet.domain.exception.NotFoundException;
 import webserver.RequestHandler;
 import webserver.exception.InvalidRequestException;
 import webserver.http.util.FileUtil;
@@ -21,7 +20,7 @@ public class HttpResponse {
 	private static final Integer STATUS_REDIRECT = 303;
 	private static final Integer STATUS_NOT_FOUND = 404;
 	private static final Integer STATUS_METHOD_NOT_ALLOWED = 405;
-	private static final Integer STATUS_BAD_REQUEST = 400;
+	private static final Integer STATUS_INVALID_REQUEST = 450;
 	private static final Logger logger = LoggerFactory.getLogger(RequestHandler.class);
 
 	private final int status;
@@ -79,7 +78,7 @@ public class HttpResponse {
 	public static HttpResponse createBadRequestResponse() throws IOException {
 		byte[] body = getResourceBytes("/error.html");
 
-		return new HttpResponse(STATUS_BAD_REQUEST, body, "text/html", null);
+		return new HttpResponse(STATUS_INVALID_REQUEST, body, "text/html", null);
 	}
 
 	private static byte[] getResourceBytes(final String url) throws IOException {
@@ -100,8 +99,8 @@ public class HttpResponse {
 			response303Header(dos, redirectUrl);
 		}
 
-		if (status == STATUS_BAD_REQUEST) {
-			response400Header(dos);
+		if (status == STATUS_INVALID_REQUEST) {
+			response450Header(dos);
 		}
 
 		if (status == STATUS_NOT_FOUND) {
@@ -145,9 +144,13 @@ public class HttpResponse {
 		}
 	}
 
-	private void response400Header(DataOutputStream dos) {
+	private void response450Header(DataOutputStream dos) {
 		try {
-			dos.writeBytes("HTTP/1.1 400 BAD_REQUEST \r\n");
+			dos.writeBytes("HTTP/1.1 450 INVALID_REQUEST \r\n");
+			dos.writeBytes("Content-Type: " + contentType + ";charset=utf-8\r\n");
+			dos.writeBytes("Content-Length: " + body.length + "\r\n");
+
+			dos.writeBytes("\r\n");
 		} catch (IOException e) {
 			logger.error(e.getMessage());
 		}

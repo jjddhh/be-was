@@ -20,6 +20,7 @@ class BoardShowServletTest {
     void init() {
         UserDatabase.flush();
         BoardDatabase.flush();
+        SessionStorage.flush();
     }
 
     // @Test

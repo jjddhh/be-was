@@ -15,6 +15,7 @@ import model.board.Board;
 import model.board.BoardFactory;
 import model.user.User;
 import session.SessionStorage;
+import webserver.exception.InvalidRequestException;
 import webserver.http.HttpRequest;
 
 class BoardWriteServletTest {
@@ -23,6 +24,7 @@ class BoardWriteServletTest {
 	void init() {
 		UserDatabase.flush();
 		BoardDatabase.flush();
+		SessionStorage.flush();
 	}
 
 	@Test
@@ -89,11 +91,10 @@ class BoardWriteServletTest {
 
 		BoardWriteServlet boardWriteServlet = new BoardWriteServlet();
 
-		// when
-		String result = boardWriteServlet.execute(httpRequest);
+		// when then
+		Assertions.assertThatThrownBy(() -> {boardWriteServlet.execute(httpRequest);})
+			.isInstanceOf(InvalidRequestException.class);
 
-		// then
-		Assertions.assertThat(result).isEqualTo("redirect:/index.html");
 	}
 
 	@Test
@@ -125,11 +126,9 @@ class BoardWriteServletTest {
 
 		BoardWriteServlet boardWriteServlet = new BoardWriteServlet();
 
-		// when
-		String result = boardWriteServlet.execute(httpRequest);
-
-		// then
-		Assertions.assertThat(result).isEqualTo("redirect:/index.html");
+		// when then
+		Assertions.assertThatThrownBy(() -> {boardWriteServlet.execute(httpRequest);})
+			.isInstanceOf(InvalidRequestException.class);
 	}
 
 	@Test
@@ -161,10 +160,8 @@ class BoardWriteServletTest {
 
 		BoardWriteServlet boardWriteServlet = new BoardWriteServlet();
 
-		// when
-		String result = boardWriteServlet.execute(httpRequest);
-
-		// then
-		Assertions.assertThat(result).isEqualTo("redirect:/index.html");
+		// when then
+		Assertions.assertThatThrownBy(() -> {boardWriteServlet.execute(httpRequest);})
+			.isInstanceOf(InvalidRequestException.class);
 	}
 }

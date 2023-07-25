@@ -12,6 +12,7 @@ import model.board.BoardFactory;
 import model.user.User;
 import servlet.Servlet;
 import session.SessionStorage;
+import webserver.exception.InvalidRequestException;
 import webserver.http.HttpRequest;
 import webserver.http.Method;
 
@@ -32,9 +33,11 @@ public class BoardWriteServlet implements Servlet {
 					BoardDatabase.save(board);
                 });
 			});
+
+			return "redirect:/index.html";
 		}
 
-		return "redirect:/index.html";
+		throw InvalidRequestException.Exception;
 	}
 
 	private boolean isLoginUser(String sid) {
