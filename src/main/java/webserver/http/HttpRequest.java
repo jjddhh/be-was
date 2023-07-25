@@ -96,4 +96,8 @@ public class HttpRequest {
     public void setModel(Map<String, String> model) {
         this.model = model;
     }
+
+    public void setCookies(Map<String, String> cookies) {
+        this.cookies = cookies;
+    }
 }

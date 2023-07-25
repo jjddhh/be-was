@@ -20,7 +20,6 @@ public class BoardShowServlet implements Servlet {
 
 	@Override
 	public String execute(HttpRequest httpRequest) {
-
 		Map<String, String> cookies = httpRequest.getCookies();
 		Map<String, String> model = httpRequest.getModel();
 		String sid = cookies.get("sid");

@@ -27,4 +27,8 @@ public class BoardDatabase {
 	public static Board get(int boardId) {
         return boards.get(boardId);
     }
+
+	public static void flush() {
+		boards = Maps.newHashMap();
+	}
 }
