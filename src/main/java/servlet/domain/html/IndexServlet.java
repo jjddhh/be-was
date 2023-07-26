@@ -8,7 +8,8 @@ import model.board.Board;
 import model.user.User;
 import servlet.Servlet;
 import session.SessionStorage;
-import webserver.http.HttpRequest;
+import webserver.http.request.HttpRequest;
+import webserver.http.response.HttpResponse;
 
 import java.util.List;
 import java.util.Map;
@@ -20,7 +21,7 @@ import java.util.Optional;
 public class IndexServlet implements Servlet {
 
     @Override
-    public String execute(HttpRequest httpRequest) {
+    public String execute(HttpRequest httpRequest, HttpResponse httpResponse) {
         StringBuilder htmlBuilder = new StringBuilder();
 
         buildIndexHtml(httpRequest, htmlBuilder);

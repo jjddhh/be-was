@@ -2,9 +2,6 @@ package servlet.domain.board;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.HashMap;
 
@@ -12,7 +9,8 @@ import db.BoardDatabase;
 import db.UserDatabase;
 import model.user.User;
 import session.SessionStorage;
-import webserver.http.HttpRequest;
+import webserver.http.request.HttpRequest;
+import webserver.http.response.HttpResponse;
 
 class BoardShowServletTest {
 
@@ -27,7 +25,7 @@ class BoardShowServletTest {
     @DisplayName("게시판글 상세보기 성공")
     void execute() {
         // given
-        HashMap<String, String> model = new HashMap<>();
+        HashMap<String, Object> model = new HashMap<>();
         model.put("id", "1");
 
         HashMap<String, String> cookies = new HashMap<>();
@@ -48,10 +46,12 @@ class BoardShowServletTest {
         httpRequest.setModel(model);
         httpRequest.setCookies(cookies);
 
+        HttpResponse httpResponse = new HttpResponse();
+
         BoardShowServlet boardShowServlet = new BoardShowServlet();
 
         // when
-        boardShowServlet.execute(httpRequest);
+        boardShowServlet.execute(httpRequest, httpResponse);
 
         // then
     }

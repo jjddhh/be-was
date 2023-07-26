@@ -14,7 +14,8 @@ import model.user.User;
 import servlet.domain.user.exception.IncorrectPasswordException;
 import servlet.domain.user.exception.UserNotExistException;
 import session.SessionStorage;
-import webserver.http.HttpRequest;
+import webserver.http.request.HttpRequest;
+import webserver.http.response.HttpResponse;
 import webserver.http.Method;
 
 @MyMapping(url = "/user/login", method = Method.POST)
@@ -23,10 +24,10 @@ public class UserLoginServlet implements Servlet {
 	private static final Logger logger = LoggerFactory.getLogger(UserLoginServlet.class);
 
 	@Override
-	public String execute(HttpRequest httpRequest) {
-		Map<String, String> model = httpRequest.getModel();
-		String userId = model.get("userId");
-		String password = model.get("password");
+	public String execute(HttpRequest httpRequest, HttpResponse httpResponse) {
+		Map<String, Object> model = httpRequest.getModel();
+		String userId = (String)model.get("userId");
+		String password = (String)model.get("password");
 
 		Optional<User> userById = UserDatabase.findUserById(userId);
 
@@ -40,7 +41,9 @@ public class UserLoginServlet implements Servlet {
 
 		String sessionId = UUID.randomUUID().toString();
 		SessionStorage.setSession(sessionId,userId);
-		model.put("Cookie", sessionId);
+
+		Map<String, String> header = httpResponse.getHeader();
+		header.put("Cookie", sessionId);
 		logger.info("user sessionId: {}", sessionId);
 
 		return "redirect:/index.html";

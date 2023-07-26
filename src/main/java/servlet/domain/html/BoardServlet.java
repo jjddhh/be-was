@@ -9,13 +9,14 @@ import db.UserDatabase;
 import model.user.User;
 import servlet.Servlet;
 import session.SessionStorage;
-import webserver.http.HttpRequest;
+import webserver.http.request.HttpRequest;
+import webserver.http.response.HttpResponse;
 
 @MyMapping(url = "/board/write.html")
 public class BoardServlet implements Servlet {
 
 	@Override
-	public String execute(HttpRequest httpRequest) {
+	public String execute(HttpRequest httpRequest, HttpResponse httpResponse) {
 
 		Map<String, String> cookies = httpRequest.getCookies();
 		String sid = cookies.get("sid");

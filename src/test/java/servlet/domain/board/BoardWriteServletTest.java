@@ -1,7 +1,5 @@
 package servlet.domain.board;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 import java.util.HashMap;
 
 import org.assertj.core.api.Assertions;
@@ -16,7 +14,8 @@ import model.board.BoardFactory;
 import model.user.User;
 import session.SessionStorage;
 import webserver.exception.InvalidRequestException;
-import webserver.http.HttpRequest;
+import webserver.http.request.HttpRequest;
+import webserver.http.response.HttpResponse;
 
 class BoardWriteServletTest {
 
@@ -31,7 +30,7 @@ class BoardWriteServletTest {
 	@DisplayName("게시판 글쓰기")
 	void execute() {
 	    // given
-		HashMap<String, String> model = new HashMap<>();
+		HashMap<String, Object> model = new HashMap<>();
 		model.put("title", "test title");
 		model.put("content", "test content");
 		model.put("writer", "test writer");
@@ -54,10 +53,12 @@ class BoardWriteServletTest {
 		httpRequest.setCookies(cookies);
 		httpRequest.setModel(model);
 
+		HttpResponse httpResponse = new HttpResponse();
+
 		BoardWriteServlet boardWriteServlet = new BoardWriteServlet();
 
 		// when
-		String result = boardWriteServlet.execute(httpRequest);
+		String result = boardWriteServlet.execute(httpRequest, httpResponse);
 
 		// then
 		Assertions.assertThat(result).isEqualTo("redirect:/index.html");
@@ -67,7 +68,7 @@ class BoardWriteServletTest {
 	@DisplayName("Session 존재하지 않는 경우")
 	void noSession() {
 		// given
-		HashMap<String, String> model = new HashMap<>();
+		HashMap<String, Object> model = new HashMap<>();
 		model.put("title", "test title");
 		model.put("content", "test content");
 		model.put("writer", "test writer");
@@ -89,10 +90,12 @@ class BoardWriteServletTest {
 		httpRequest.setCookies(cookies);
 		httpRequest.setModel(model);
 
+		HttpResponse httpResponse = new HttpResponse();
+
 		BoardWriteServlet boardWriteServlet = new BoardWriteServlet();
 
 		// when then
-		Assertions.assertThatThrownBy(() -> {boardWriteServlet.execute(httpRequest);})
+		Assertions.assertThatThrownBy(() -> {boardWriteServlet.execute(httpRequest, httpResponse);})
 			.isInstanceOf(InvalidRequestException.class);
 
 	}
@@ -101,7 +104,7 @@ class BoardWriteServletTest {
 	@DisplayName("존재하지 않는 SessionId")
 	void invalidSessionId() {
 		// given
-		HashMap<String, String> model = new HashMap<>();
+		HashMap<String, Object> model = new HashMap<>();
 		model.put("title", "test title");
 		model.put("content", "test content");
 		model.put("writer", "test writer");
@@ -124,10 +127,12 @@ class BoardWriteServletTest {
 		httpRequest.setCookies(cookies);
 		httpRequest.setModel(model);
 
+		HttpResponse httpResponse = new HttpResponse();
+
 		BoardWriteServlet boardWriteServlet = new BoardWriteServlet();
 
 		// when then
-		Assertions.assertThatThrownBy(() -> {boardWriteServlet.execute(httpRequest);})
+		Assertions.assertThatThrownBy(() -> {boardWriteServlet.execute(httpRequest, httpResponse);})
 			.isInstanceOf(InvalidRequestException.class);
 	}
 
@@ -135,7 +140,7 @@ class BoardWriteServletTest {
 	@DisplayName("SessionId에 해당하는 유저가 존재하지 않는 경우")
 	void noSessionUser() {
 		// given
-		HashMap<String, String> model = new HashMap<>();
+		HashMap<String, Object> model = new HashMap<>();
 		model.put("title", "test title");
 		model.put("content", "test content");
 		model.put("writer", "test writer");
@@ -158,10 +163,12 @@ class BoardWriteServletTest {
 		httpRequest.setCookies(cookies);
 		httpRequest.setModel(model);
 
+		HttpResponse httpResponse = new HttpResponse();
+
 		BoardWriteServlet boardWriteServlet = new BoardWriteServlet();
 
 		// when then
-		Assertions.assertThatThrownBy(() -> {boardWriteServlet.execute(httpRequest);})
+		Assertions.assertThatThrownBy(() -> {boardWriteServlet.execute(httpRequest, httpResponse);})
 			.isInstanceOf(InvalidRequestException.class);
 	}
 }

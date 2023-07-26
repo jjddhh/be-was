@@ -12,19 +12,20 @@ import model.board.Board;
 import model.user.User;
 import servlet.Servlet;
 import session.SessionStorage;
-import webserver.http.HttpRequest;
+import webserver.http.request.HttpRequest;
+import webserver.http.response.HttpResponse;
 
 @MyMapping(url = "/board/show")
 @ResponseBody
 public class BoardShowServlet implements Servlet {
 
 	@Override
-	public String execute(HttpRequest httpRequest) {
+	public String execute(HttpRequest httpRequest, HttpResponse httpResponse) {
 		Map<String, String> cookies = httpRequest.getCookies();
-		Map<String, String> model = httpRequest.getModel();
+		Map<String, Object> model = httpRequest.getModel();
 		String sid = cookies.get("sid");
 		if (isLoginUser(sid)) {
-			Integer boardId = Integer.parseInt(model.get("id"));
+			Integer boardId = Integer.parseInt((String)model.get("id"));
 			Board board = BoardDatabase.get(boardId);
 			String boardDetailHtml = buildBoardDetail(board);
 			return boardDetailHtml;
