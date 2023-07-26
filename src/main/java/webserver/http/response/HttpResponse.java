@@ -29,7 +29,7 @@ public class HttpResponse {
 	private byte[] body;
 	private String contentType;
 	private String redirectUrl;
-	private Map<String, String> header = new HashMap<String, String>();
+	private Map<String, String> header = new HashMap<>();
 
 	public HttpResponse(int status, byte[] body, String contentType, String redirectUrl, Map<String, String> header) {
 		this.status = status;

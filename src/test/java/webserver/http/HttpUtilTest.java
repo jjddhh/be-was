@@ -24,7 +24,7 @@ class HttpUtilTest {
 		BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
 
 		// when
-		String actualContent = HttpUtil.getContent(bufferedReader);
+		String actualContent = HttpUtil.parseHttpToString(bufferedReader);
 
 		// then
 		assertThat(actualContent).isEqualTo(expectedContent);
@@ -44,7 +44,7 @@ class HttpUtilTest {
 		BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
 
 		// when
-		String actualContent = HttpUtil.getContent(bufferedReader);
+		String actualContent = HttpUtil.parseHttpToString(bufferedReader);
 		System.out.println();
 		byte[] bytes = actualContent.getBytes();
 		byte[] bytes1 = expectedContent.getBytes();
@@ -63,7 +63,7 @@ class HttpUtilTest {
 		BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
 
 		// when then
-		assertThatThrownBy(() -> HttpUtil.getContent(bufferedReader))
+		assertThatThrownBy(() -> HttpUtil.parseHttpToString(bufferedReader))
 			.isInstanceOf(InvalidRequestException.class);
 	}
 
@@ -76,7 +76,7 @@ class HttpUtilTest {
 		BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
 
 		// when
-		String actualContent = HttpUtil.getContent(bufferedReader);
+		String actualContent = HttpUtil.parseHttpToString(bufferedReader);
 
 		// then
 		assertThat(actualContent).isEqualTo(expectedContent);
@@ -91,7 +91,7 @@ class HttpUtilTest {
 		BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
 
 		// when then
-		assertThatThrownBy(() -> HttpUtil.getContent(bufferedReader))
+		assertThatThrownBy(() -> HttpUtil.parseHttpToString(bufferedReader))
 			.isInstanceOf(InvalidRequestException.class);
 	}
 

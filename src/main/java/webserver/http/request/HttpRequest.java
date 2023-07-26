@@ -12,17 +12,12 @@ import java.util.Objects;
 
 public class HttpRequest {
 
-    private static final String GET = "GET";
-    private static final String POST = "POST";
     private static final String INTER_PARAM_SEPARATOR = "[&]";
     private static final String INTRA_PARAM_SEPARATOR = "[=]";
     private static final Integer KEY_VALUE_PAIR = 2;
 
-    private String header;
-    private String body;
     private Method method;
     private String contentType;
-    private String pathParam;
     private String path;
     private String param;
     private Map<String, String> cookies;
@@ -32,22 +27,24 @@ public class HttpRequest {
     }
 
     public HttpRequest(final BufferedReader reader) throws IOException {
-        this(HttpUtil.getContent(reader));
+        this(HttpUtil.parseHttpToString(reader));
     }
 
     public HttpRequest(final String content) throws IOException {
-        this.header = HttpUtil.extractHeader(content);
-        this.body = HttpUtil.extractBody(content);
+        String header = HttpUtil.extractHeader(content);
         this.method = HttpUtil.getMethod(header);
         this.contentType = HttpUtil.getContentType(header);
-        this.pathParam = HttpUtil.getPathParam(header);
         this.cookies = HttpUtil.getCookies(header);
+
+        String pathParam = HttpUtil.getPathParam(header);
         this.path = HttpUtil.getPath(pathParam);
         this.param = HttpUtil.getParam(pathParam);
-        this.model = createModel();
+
+        String body = HttpUtil.extractBody(content);
+        this.model = createModel(body);
     }
 
-    public Map<String, Object> createModel() {
+    public Map<String, Object> createModel(String body) {
         if (method == Method.GET) {
             return parseToModel(param);
         }

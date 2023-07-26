@@ -39,14 +39,17 @@ public class UserLoginServlet implements Servlet {
 			return "/user/login_failed.html";
 		}
 
+		setCookie(httpResponse, userId);
+
+		return "redirect:/index.html";
+	}
+
+	private static void setCookie(HttpResponse httpResponse, String userId) {
 		String sessionId = UUID.randomUUID().toString();
-		SessionStorage.setSession(sessionId,userId);
+		SessionStorage.setSession(sessionId, userId);
 
 		Map<String, String> header = httpResponse.getHeader();
 		header.put("Cookie", sessionId);
-		logger.info("user sessionId: {}", sessionId);
-
-		return "redirect:/index.html";
 	}
 
 	private User getUser(Optional<User> userById) {

@@ -21,7 +21,7 @@ public class HttpUtil {
 	private static final String PATH_PARAM_SEPARATOR = "[?]";
 	private static final Logger logger = LoggerFactory.getLogger(RequestHandler.class);
 
-	public static String getContent(BufferedReader reader) throws IOException {
+	public static String parseHttpToString(BufferedReader reader) throws IOException {
 		StringBuilder content = new StringBuilder();
 		String line;
 		int contentLength = 0;
