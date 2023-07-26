@@ -9,6 +9,7 @@ import db.BoardDatabase;
 import db.UserDatabase;
 import model.user.User;
 import session.SessionStorage;
+import webserver.http.request.Cookies;
 import webserver.http.request.HttpRequest;
 import webserver.http.response.HttpResponse;
 
@@ -28,8 +29,9 @@ class BoardShowServletTest {
         HashMap<String, Object> model = new HashMap<>();
         model.put("id", "1");
 
-        HashMap<String, String> cookies = new HashMap<>();
-        cookies.put("sid", "SessionId");
+        HashMap<String, String> cookieMap = new HashMap<>();
+        cookieMap.put("sid", "SessionId");
+        Cookies cookies = new Cookies(cookieMap);
 
         User user = User.builder()
             .userId("userId")

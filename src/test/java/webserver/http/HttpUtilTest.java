@@ -10,6 +10,7 @@ import java.util.Map;
 import static org.assertj.core.api.Assertions.*;
 
 import webserver.exception.InvalidRequestException;
+import webserver.http.request.Cookies;
 import webserver.http.util.HttpUtil;
 
 @DisplayName("HttpUtil 테스트")
@@ -219,8 +220,8 @@ class HttpUtilTest {
 			"Cookie: sid=123456";
 
 		// when
-		Map<String, String> cookies = HttpUtil.getCookies(header);
-		String sid = cookies.get("sid");
+		Cookies cookies = HttpUtil.getCookies(header);
+		String sid = cookies.getCookie("sid");
 
 		// then
 		assertThat(sid).isEqualTo("123456");
@@ -235,7 +236,7 @@ class HttpUtilTest {
 			"Connection: keep-alive\n";
 
 		// when
-		Map<String, String> cookies = HttpUtil.getCookies(header);
+		Cookies cookies = HttpUtil.getCookies(header);
 
 		// then
 		assertThat(cookies).isEqualTo(null);

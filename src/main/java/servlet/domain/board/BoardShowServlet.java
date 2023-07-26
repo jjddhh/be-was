@@ -12,6 +12,7 @@ import model.board.Board;
 import model.user.User;
 import servlet.Servlet;
 import session.SessionStorage;
+import webserver.http.request.Cookies;
 import webserver.http.request.HttpRequest;
 import webserver.http.response.HttpResponse;
 
@@ -21,9 +22,9 @@ public class BoardShowServlet implements Servlet {
 
 	@Override
 	public String execute(HttpRequest httpRequest, HttpResponse httpResponse) {
-		Map<String, String> cookies = httpRequest.getCookies();
+		Cookies cookies = httpRequest.getCookies();
+		String sid = cookies.getCookie("sid");
 		Map<String, Object> model = httpRequest.getModel();
-		String sid = cookies.get("sid");
 		if (isLoginUser(sid)) {
 			Integer boardId = Integer.parseInt((String)model.get("id"));
 			Board board = BoardDatabase.get(boardId);

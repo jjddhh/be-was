@@ -20,7 +20,7 @@ public class HttpRequest {
     private String contentType;
     private String path;
     private String param;
-    private Map<String, String> cookies;
+    private Cookies cookies;
     private Map<String, Object> model;
 
     public HttpRequest() {
@@ -92,7 +92,7 @@ public class HttpRequest {
         return model;
     }
 
-    public Map<String, String> getCookies() {
+    public Cookies getCookies() {
         return cookies;
     }
 
@@ -100,7 +100,7 @@ public class HttpRequest {
         this.model = model;
     }
 
-    public void setCookies(Map<String, String> cookies) {
+    public void setCookies(Cookies cookies) {
         this.cookies = cookies;
     }
 }

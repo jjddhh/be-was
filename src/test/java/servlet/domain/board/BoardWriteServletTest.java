@@ -14,6 +14,7 @@ import model.board.BoardFactory;
 import model.user.User;
 import session.SessionStorage;
 import webserver.exception.InvalidRequestException;
+import webserver.http.request.Cookies;
 import webserver.http.request.HttpRequest;
 import webserver.http.response.HttpResponse;
 
@@ -37,8 +38,10 @@ class BoardWriteServletTest {
 		Board board = BoardFactory.createBoard(model);
 		BoardDatabase.save(board);
 
-		HashMap<String, String> cookies = new HashMap<>();
-		cookies.put("sid", "SessionId");
+		HashMap<String, String> cookieMap = new HashMap<>();
+		cookieMap.put("sid", "SessionId");
+		Cookies cookies = new Cookies(cookieMap);
+
 
 		User user = User.builder()
 			.userId("userId")
@@ -75,7 +78,9 @@ class BoardWriteServletTest {
 		Board board = BoardFactory.createBoard(model);
 		BoardDatabase.save(board);
 
-		HashMap<String, String> cookies = new HashMap<>();
+		HashMap<String, String> cookieMap = new HashMap<>();
+		cookieMap.put("sid", "SessionId");
+		Cookies cookies = new Cookies(cookieMap);
 
 		User user = User.builder()
 			.userId("userId")
@@ -83,7 +88,6 @@ class BoardWriteServletTest {
 			.name("name")
 			.email("<EMAIL>")
 			.build();
-		SessionStorage.setSession("SessionId", "userId");
 		UserDatabase.addUser(user);
 
 		HttpRequest httpRequest = new HttpRequest();
@@ -97,7 +101,6 @@ class BoardWriteServletTest {
 		// when then
 		Assertions.assertThatThrownBy(() -> {boardWriteServlet.execute(httpRequest, httpResponse);})
 			.isInstanceOf(InvalidRequestException.class);
-
 	}
 
 	@Test
@@ -111,8 +114,9 @@ class BoardWriteServletTest {
 		Board board = BoardFactory.createBoard(model);
 		BoardDatabase.save(board);
 
-		HashMap<String, String> cookies = new HashMap<>();
-		cookies.put("sid", "SessionId");
+		HashMap<String, String> cookieMap = new HashMap<>();
+		cookieMap.put("sid", "SessionId");
+		Cookies cookies = new Cookies(cookieMap);
 
 		User user = User.builder()
 			.userId("userId")
@@ -147,8 +151,9 @@ class BoardWriteServletTest {
 		Board board = BoardFactory.createBoard(model);
 		BoardDatabase.save(board);
 
-		HashMap<String, String> cookies = new HashMap<>();
-		cookies.put("sid", "SessionId");
+		HashMap<String, String> cookieMap = new HashMap<>();
+		cookieMap.put("sid", "SessionId");
+		Cookies cookies = new Cookies(cookieMap);
 
 		User user = User.builder()
 			.userId("userId")

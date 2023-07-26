@@ -8,6 +8,7 @@ import model.board.Board;
 import model.user.User;
 import servlet.Servlet;
 import session.SessionStorage;
+import webserver.http.request.Cookies;
 import webserver.http.request.HttpRequest;
 import webserver.http.response.HttpResponse;
 
@@ -96,8 +97,8 @@ public class IndexServlet implements Servlet {
 
         String loginPart = "                        <li><a href=\"user/login.html\" role=\"button\">로그인</a></li>\n";
 
-        Map<String, String> cookies = httpRequest.getCookies();
-        String sid = cookies.get("sid");
+        Cookies cookies = httpRequest.getCookies();
+        String sid = cookies.getCookie("sid");
 
         if (isLoginUser(sid)) {
             Optional<String> sessionUserId = SessionStorage.getSessionUserId(sid);
