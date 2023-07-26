@@ -1,6 +1,7 @@
-package webserver.http;
+package webserver.http.request;
 
 import webserver.exception.InvalidRequestException;
+import webserver.http.Method;
 import webserver.http.util.HttpUtil;
 
 import java.io.BufferedReader;
@@ -15,6 +16,7 @@ public class HttpRequest {
     private static final String POST = "POST";
     private static final String INTER_PARAM_SEPARATOR = "[&]";
     private static final String INTRA_PARAM_SEPARATOR = "[=]";
+    private static final Integer KEY_VALUE_PAIR = 2;
 
     private String header;
     private String body;
@@ -24,7 +26,7 @@ public class HttpRequest {
     private String path;
     private String param;
     private Map<String, String> cookies;
-    private Map<String, String> model;
+    private Map<String, Object> model;
 
     public HttpRequest() {
     }
@@ -45,7 +47,7 @@ public class HttpRequest {
         this.model = createModel();
     }
 
-    public Map<String, String> createModel() {
+    public Map<String, Object> createModel() {
         if (method == Method.GET) {
             return parseToModel(param);
         }
@@ -53,20 +55,24 @@ public class HttpRequest {
         return parseToModel(body);
     }
 
-    private Map<String, String> parseToModel(String value) {
+    private Map<String, Object> parseToModel(String value) {
         if (isEmptyValue(value)) {
             return new HashMap<>();
         }
 
         String[] parsedParam = value.split(INTER_PARAM_SEPARATOR);
-        Map<String, String> queryPair = new HashMap<>();
+        Map<String, Object> queryPair = new HashMap<>();
         for (String pair : parsedParam) {
             String[] splitPair = pair.split(INTRA_PARAM_SEPARATOR);
-            if(splitPair.length < 2) throw InvalidRequestException.Exception;
+            verifyParamPair(splitPair);
             queryPair.put(splitPair[0], splitPair[1]);
         }
 
         return queryPair;
+    }
+
+    private static void verifyParamPair(String[] splitPair) {
+        if(splitPair.length < KEY_VALUE_PAIR) throw InvalidRequestException.Exception;
     }
 
     private boolean isEmptyValue(String value) {
@@ -85,7 +91,7 @@ public class HttpRequest {
         return path;
     }
 
-    public Map<String, String> getModel() {
+    public Map<String, Object> getModel() {
         return model;
     }
 
@@ -93,7 +99,7 @@ public class HttpRequest {
         return cookies;
     }
 
-    public void setModel(Map<String, String> model) {
+    public void setModel(Map<String, Object> model) {
         this.model = model;
     }
 
