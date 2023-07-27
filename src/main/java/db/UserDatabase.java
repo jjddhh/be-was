@@ -28,10 +28,6 @@ public class UserDatabase {
         users = Maps.newHashMap();
     }
 
-    public static int getUserCount() {
-        return users.size();
-    }
-
     public static ArrayList<User> getUserList() {
         return new ArrayList<>(users.values());
     }

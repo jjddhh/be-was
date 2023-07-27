@@ -29,12 +29,14 @@ public class MyContainer {
 	public static void start(Class<?> componentScanRoot) throws ReflectiveOperationException {
 		Package rootPackage = componentScanRoot.getPackage();
 
-		Reflections reflections = new Reflections(new ConfigurationBuilder()
-			.setUrls(ClasspathHelper.forPackage(rootPackage.getName()))
-			.setScanners(new SubTypesScanner(false), new ResourcesScanner()));
+		Reflections reflections = findAllClassesBelongToPackage(rootPackage);
 
 		Set<Class<?>> classes = reflections.getSubTypesOf(Object.class);
 
+		scanMappedClasses(classes);
+	}
+
+	private static void scanMappedClasses(Set<Class<?>> classes) throws ReflectiveOperationException {
 		for (Class<?> clazz : classes) {
 			Annotation[] declaredAnnotations = clazz.getDeclaredAnnotations();
 
@@ -47,6 +49,13 @@ public class MyContainer {
 				}
 			}
 		}
+	}
+
+	private static Reflections findAllClassesBelongToPackage(Package rootPackage) {
+		Reflections reflections = new Reflections(new ConfigurationBuilder()
+			.setUrls(ClasspathHelper.forPackage(rootPackage.getName()))
+			.setScanners(new SubTypesScanner(false), new ResourcesScanner()));
+		return reflections;
 	}
 
 	public static Mapping createMapping(MyMapping annotation) {
