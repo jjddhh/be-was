@@ -1,4 +1,4 @@
-package servlet.domain.html;
+package servlet.domain.board;
 
 import java.util.Map;
 import java.util.Objects;

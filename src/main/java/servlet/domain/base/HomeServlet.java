@@ -1,4 +1,4 @@
-package servlet.domain.html;
+package servlet.domain.base;
 
 import container.annotation.MyMapping;
 import container.annotation.ResponseBody;

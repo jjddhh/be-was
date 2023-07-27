@@ -1,4 +1,4 @@
-package servlet.domain.html;
+package servlet.domain.base;
 
 import container.annotation.MyMapping;
 import container.annotation.ResponseBody;
@@ -13,7 +13,6 @@ import webserver.http.request.HttpRequest;
 import webserver.http.response.HttpResponse;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 

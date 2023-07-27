@@ -1,4 +1,4 @@
-package servlet.domain.html;
+package servlet.domain.user;
 
 import java.util.List;
 import java.util.Map;
