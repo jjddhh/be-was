@@ -13,12 +13,11 @@ import model.board.Board;
 import model.board.BoardFactory;
 import model.user.User;
 import session.SessionStorage;
-import webserver.exception.InvalidRequestException;
 import webserver.http.request.Cookies;
 import webserver.http.request.HttpRequest;
 import webserver.http.response.HttpResponse;
 
-class BoardWriteServletTest {
+class BoardServletTest {
 
 	@BeforeEach
 	void init() {
@@ -28,8 +27,8 @@ class BoardWriteServletTest {
 	}
 
 	@Test
-	@DisplayName("게시판 글쓰기")
-	void execute() {
+	@DisplayName("게시판 글 작성 페이지")
+	void loginUser() {
 	    // given
 		HashMap<String, Object> model = new HashMap<>();
 		model.put("title", "test title");
@@ -42,15 +41,8 @@ class BoardWriteServletTest {
 		cookieMap.put("sid", "SessionId");
 		Cookies cookies = new Cookies(cookieMap);
 
-
-		User user = User.builder()
-			.userId("userId")
-			.password("password")
-			.name("name")
-			.email("<EMAIL>")
-			.build();
+		addUser();
 		SessionStorage.setSession("SessionId", "userId");
-		UserDatabase.addUser(user);
 
 		HttpRequest httpRequest = new HttpRequest();
 		httpRequest.setCookies(cookies);
@@ -58,18 +50,18 @@ class BoardWriteServletTest {
 
 		HttpResponse httpResponse = new HttpResponse();
 
-		BoardWriteServlet boardWriteServlet = new BoardWriteServlet();
+		BoardServlet boardServlet = new BoardServlet();
 
 		// when
-		String result = boardWriteServlet.execute(httpRequest, httpResponse);
+		String actual = boardServlet.execute(httpRequest, httpResponse);
 
 		// then
-		Assertions.assertThat(result).isEqualTo("redirect:/index.html");
+		Assertions.assertThat(actual).isEqualTo("/board/write.html");
 	}
 
 	@Test
-	@DisplayName("Session 존재하지 않는 경우")
-	void noSession() {
+	@DisplayName("sid null인 경우")
+	void nullSid() {
 		// given
 		HashMap<String, Object> model = new HashMap<>();
 		model.put("title", "test title");
@@ -81,13 +73,7 @@ class BoardWriteServletTest {
 		HashMap<String, String> cookieMap = new HashMap<>();
 		Cookies cookies = new Cookies(cookieMap);
 
-		User user = User.builder()
-			.userId("userId")
-			.password("password")
-			.name("name")
-			.email("<EMAIL>")
-			.build();
-		UserDatabase.addUser(user);
+		addUser();
 
 		HttpRequest httpRequest = new HttpRequest();
 		httpRequest.setCookies(cookies);
@@ -95,16 +81,18 @@ class BoardWriteServletTest {
 
 		HttpResponse httpResponse = new HttpResponse();
 
-		BoardWriteServlet boardWriteServlet = new BoardWriteServlet();
+		BoardServlet boardServlet = new BoardServlet();
 
-		// when then
-		Assertions.assertThatThrownBy(() -> {boardWriteServlet.execute(httpRequest, httpResponse);})
-			.isInstanceOf(InvalidRequestException.class);
+		// when
+		String actual = boardServlet.execute(httpRequest, httpResponse);
+
+		// then
+		Assertions.assertThat(actual).isEqualTo("redirect:/user/login.html");
 	}
 
 	@Test
-	@DisplayName("존재하지 않는 SessionId")
-	void invalidSessionId() {
+	@DisplayName("sid에 해당하는 session 정보 없는 경우")
+	void noSessionInfo() {
 		// given
 		HashMap<String, Object> model = new HashMap<>();
 		model.put("title", "test title");
@@ -117,14 +105,8 @@ class BoardWriteServletTest {
 		cookieMap.put("sid", "SessionId");
 		Cookies cookies = new Cookies(cookieMap);
 
-		User user = User.builder()
-			.userId("userId")
-			.password("password")
-			.name("name")
-			.email("<EMAIL>")
-			.build();
+		addUser();
 		SessionStorage.setSession("invalidSessionId", "userId");
-		UserDatabase.addUser(user);
 
 		HttpRequest httpRequest = new HttpRequest();
 		httpRequest.setCookies(cookies);
@@ -132,16 +114,18 @@ class BoardWriteServletTest {
 
 		HttpResponse httpResponse = new HttpResponse();
 
-		BoardWriteServlet boardWriteServlet = new BoardWriteServlet();
+		BoardServlet boardServlet = new BoardServlet();
 
-		// when then
-		Assertions.assertThatThrownBy(() -> {boardWriteServlet.execute(httpRequest, httpResponse);})
-			.isInstanceOf(InvalidRequestException.class);
+		// when
+		String actual = boardServlet.execute(httpRequest, httpResponse);
+
+		// then
+		Assertions.assertThat(actual).isEqualTo("redirect:/user/login.html");
 	}
 
 	@Test
-	@DisplayName("SessionId에 해당하는 유저가 존재하지 않는 경우")
-	void noSessionUser() {
+	@DisplayName("sid에 해당하는 user 정보 없는 경우")
+	void noUserInfo() {
 		// given
 		HashMap<String, Object> model = new HashMap<>();
 		model.put("title", "test title");
@@ -154,14 +138,7 @@ class BoardWriteServletTest {
 		cookieMap.put("sid", "SessionId");
 		Cookies cookies = new Cookies(cookieMap);
 
-		User user = User.builder()
-			.userId("userId")
-			.password("password")
-			.name("name")
-			.email("<EMAIL>")
-			.build();
-		SessionStorage.setSession("SessionId", "invalidId");
-		UserDatabase.addUser(user);
+		SessionStorage.setSession("SessionId", "userId");
 
 		HttpRequest httpRequest = new HttpRequest();
 		httpRequest.setCookies(cookies);
@@ -169,10 +146,22 @@ class BoardWriteServletTest {
 
 		HttpResponse httpResponse = new HttpResponse();
 
-		BoardWriteServlet boardWriteServlet = new BoardWriteServlet();
+		BoardServlet boardServlet = new BoardServlet();
 
-		// when then
-		Assertions.assertThatThrownBy(() -> {boardWriteServlet.execute(httpRequest, httpResponse);})
-			.isInstanceOf(InvalidRequestException.class);
+		// when
+		String actual = boardServlet.execute(httpRequest, httpResponse);
+
+		// then
+		Assertions.assertThat(actual).isEqualTo("redirect:/user/login.html");
+	}
+
+	private static void addUser() {
+		User user = User.builder()
+			.userId("userId")
+			.password("password")
+			.name("name")
+			.email("<EMAIL>")
+			.build();
+		UserDatabase.addUser(user);
 	}
 }
