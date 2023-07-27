@@ -7,6 +7,8 @@ import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import webserver.http.request.HttpRequest;
+
 class HttpRequestTest {
 
     @Test
@@ -21,7 +23,7 @@ class HttpRequestTest {
         HttpRequest httpRequest = new HttpRequest(content);
 
         // when
-        Map<String, String> model = httpRequest.getModel();
+        Map<String, Object> model = httpRequest.getModel();
 
         // then
         SoftAssertions.assertSoftly(softAssertions -> {
@@ -47,7 +49,7 @@ class HttpRequestTest {
         HttpRequest httpRequest = new HttpRequest(content);
 
         // when
-        Map<String, String> model = httpRequest.getModel();
+        Map<String, Object> model = httpRequest.getModel();
 
         // then
         SoftAssertions.assertSoftly(softAssertions -> {

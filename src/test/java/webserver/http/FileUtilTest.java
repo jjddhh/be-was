@@ -6,8 +6,6 @@ import org.junit.jupiter.api.Test;
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
 
-import java.io.File;
-
 import webserver.http.util.FileUtil;
 
 @DisplayName("FileUtil 테스트")
@@ -20,7 +18,7 @@ class FileUtilTest {
         String url = "/static/test/index.html";
 
         // when
-        boolean fileRequest = FileUtil.isFileRequest(url);
+        boolean fileRequest = FileUtil.isStaticResourceRequest(url);
 
         // then
         assertTrue(fileRequest);
@@ -33,7 +31,7 @@ class FileUtilTest {
         String url = "/user/register";
 
         // when
-        boolean fileRequest = FileUtil.isFileRequest(url);
+        boolean fileRequest = FileUtil.isStaticResourceRequest(url);
 
         // then
         assertThat(fileRequest).isFalse();
@@ -46,7 +44,7 @@ class FileUtilTest {
         String url = "/static/css/index.css";
 
         // when
-        boolean fileRequest = FileUtil.isFileRequest(url);
+        boolean fileRequest = FileUtil.isStaticResourceRequest(url);
 
         // then
         assertTrue(fileRequest);

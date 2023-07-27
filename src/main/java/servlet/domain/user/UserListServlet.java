@@ -1,4 +1,4 @@
-package servlet.domain.html;
+package servlet.domain.user;
 
 import java.util.List;
 import java.util.Map;
@@ -12,16 +12,18 @@ import db.UserDatabase;
 import model.user.User;
 import servlet.Servlet;
 import session.SessionStorage;
-import webserver.http.HttpRequest;
+import webserver.http.request.Cookies;
+import webserver.http.request.HttpRequest;
+import webserver.http.response.HttpResponse;
 
 @MyMapping(url = "/user/list.html")
 @ResponseBody
 public class UserListServlet implements Servlet {
 
 	@Override
-	public String execute(HttpRequest httpRequest) {
-		Map<String, String> cookies = httpRequest.getCookies();
-		String sid = cookies.get("sid");
+	public String execute(HttpRequest httpRequest, HttpResponse httpResponse) {
+		Cookies cookies = httpRequest.getCookies();
+		String sid = cookies.getCookie("sid");
 
 		StringBuilder htmlBuilder = new StringBuilder();
 
@@ -119,18 +121,8 @@ public class UserListServlet implements Servlet {
 		htmlBuilder.append("              </thead>\n");
 		htmlBuilder.append("              <tbody>\n");
 
-		StringBuilder userListBuilder = new StringBuilder();
-		List<User> userList = UserDatabase.getUserList();
-
-		AtomicInteger userCount = new AtomicInteger(1);
-		userList.forEach(user -> {
-			userListBuilder.append("                <tr>\n");
-			userListBuilder.append("                    <th scope=\"row\">").append(userCount.get()).append("</th> <td>").append(user.getUserId()).append("</td> <td>").append(user.getName()).append("</td> <td>").append(user.getEmail()).append("</td><td><a href=\"#\" class=\"btn btn-success\" role=\"button\">수정</a></td>\n");
-			userListBuilder.append("                </tr>\n");
-			userCount.incrementAndGet();
-		});
-
-		htmlBuilder.append(userListBuilder);
+		String userListPart = renderUserListPart();
+		htmlBuilder.append(userListPart);
 
 		htmlBuilder.append("              </tbody>\n");
 		htmlBuilder.append("          </table>\n");
@@ -144,6 +136,20 @@ public class UserListServlet implements Servlet {
 		htmlBuilder.append("<script src=\"../js/scripts.js\"></script>\n");
 		htmlBuilder.append("</body>\n");
 		htmlBuilder.append("</html>\n");
+	}
+
+	private static String renderUserListPart() {
+		StringBuilder userListBuilder = new StringBuilder();
+		List<User> userList = UserDatabase.getUserList();
+
+		AtomicInteger userCount = new AtomicInteger(1);
+		userList.forEach(user -> {
+			userListBuilder.append("                <tr>\n");
+			userListBuilder.append("                    <th scope=\"row\">").append(userCount.get()).append("</th> <td>").append(user.getUserId()).append("</td> <td>").append(user.getName()).append("</td> <td>").append(user.getEmail()).append("</td><td><a href=\"#\" class=\"btn btn-success\" role=\"button\">수정</a></td>\n");
+			userListBuilder.append("                </tr>\n");
+			userCount.incrementAndGet();
+		});
+		return userListBuilder.toString();
 	}
 
 	private static void buildLoginHtml(StringBuilder htmlBuilder) {

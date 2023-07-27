@@ -14,7 +14,8 @@ import lock.NamedLock;
 import model.user.User;
 import model.user.UserFactory;
 import servlet.domain.user.exception.AlreadyExistUserException;
-import webserver.http.HttpRequest;
+import webserver.http.request.HttpRequest;
+import webserver.http.response.HttpResponse;
 import webserver.http.Method;
 
 @MyMapping(url = "/user/create", method = Method.POST)
@@ -23,8 +24,8 @@ public class UserCreateServlet implements Servlet {
 	private static final Logger logger = LoggerFactory.getLogger(UserCreateServlet.class);
 
 	@Override
-	public String execute(HttpRequest httpRequest) {
-		Map<String, String> model = httpRequest.getModel();
+	public String execute(HttpRequest httpRequest, HttpResponse httpResponse) {
+		Map<String, Object> model = httpRequest.getModel();
 		User user = UserFactory.createUser(model);
 
 		Lock lock = NamedLock.getLock(user.getName());

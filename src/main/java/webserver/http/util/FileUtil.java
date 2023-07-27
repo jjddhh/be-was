@@ -10,7 +10,7 @@ public class FileUtil {
 	public static final String DYNAMIC_PATH = "src/main/resources/templates";
 	public static final String STATIC_PATH = "src/main/resources/static";
 
-	public static boolean isFileRequest(String url) {
+	public static boolean isStaticResourceRequest(String url) {
 		String[] splitUrl = url.split("[.]");
 		if (splitUrl.length == 1) {
 			return false;

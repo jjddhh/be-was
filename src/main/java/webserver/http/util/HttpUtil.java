@@ -6,6 +6,7 @@ import org.slf4j.LoggerFactory;
 import webserver.RequestHandler;
 import webserver.exception.InvalidRequestException;
 import webserver.http.Method;
+import webserver.http.request.Cookies;
 
 import java.io.*;
 import java.net.URLDecoder;
@@ -21,7 +22,7 @@ public class HttpUtil {
 	private static final String PATH_PARAM_SEPARATOR = "[?]";
 	private static final Logger logger = LoggerFactory.getLogger(RequestHandler.class);
 
-	public static String getContent(BufferedReader reader) throws IOException {
+	public static String parseHttpToString(BufferedReader reader) throws IOException {
 		StringBuilder content = new StringBuilder();
 		String line;
 		int contentLength = 0;
@@ -158,18 +159,19 @@ public class HttpUtil {
 		return Method.valueOf(method);
 	}
 
-	public static Map<String, String> getCookies(final String headers) {
+	public static Cookies getCookies(final String headers) {
 		Map<String, String> headerMap = parseHeaders(headers);
 		String cookies = headerMap.get("Cookie");
 
 		if(Objects.isNull(cookies)) return null;
 
-		return Arrays.stream(cookies.split(";"))
-				.map(String::trim)
-				.map(s -> s.split("="))
-				.collect(Collectors.toMap(
-						a -> a[0],  // key
-						a -> a[1]   // value
-				));
+		Map<String, String> cookieMap = Arrays.stream(cookies.split(";"))
+			.map(String::trim)
+			.map(s -> s.split("="))
+			.collect(Collectors.toMap(
+				a -> a[0],  // key
+				a -> a[1]   // value
+			));
+		return new Cookies(cookieMap);
 	}
 }

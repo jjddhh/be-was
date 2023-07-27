@@ -1,6 +1,5 @@
-package servlet.domain.html;
+package servlet.domain.board;
 
-import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -9,16 +8,17 @@ import db.UserDatabase;
 import model.user.User;
 import servlet.Servlet;
 import session.SessionStorage;
-import webserver.http.HttpRequest;
+import webserver.http.request.Cookies;
+import webserver.http.request.HttpRequest;
+import webserver.http.response.HttpResponse;
 
 @MyMapping(url = "/board/write.html")
 public class BoardServlet implements Servlet {
 
 	@Override
-	public String execute(HttpRequest httpRequest) {
-
-		Map<String, String> cookies = httpRequest.getCookies();
-		String sid = cookies.get("sid");
+	public String execute(HttpRequest httpRequest, HttpResponse httpResponse) {
+		Cookies cookies = httpRequest.getCookies();
+		String sid = cookies.getCookie("sid");
 		if (isLoginUser(sid)) {
 			return "/board/write.html";
 		}

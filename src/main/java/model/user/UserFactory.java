@@ -2,8 +2,6 @@ package model.user;
 
 import java.util.Map;
 
-import model.user.User;
-
 public class UserFactory {
 
 	private static final String USER_ID = "userId";
@@ -11,12 +9,12 @@ public class UserFactory {
 	private static final String NAME = "name";
 	private static final String EMAIL = "email";
 
-	public static User createUser(Map<String, String> map) {
+	public static User createUser(Map<String, Object> map) {
 		return User.builder()
-			.userId(map.get(USER_ID))
-			.password(map.get(PASSWORD))
-			.name(map.get(NAME))
-			.email(map.get(EMAIL))
+			.userId((String)map.get(USER_ID))
+			.password((String)map.get(PASSWORD))
+			.name((String)map.get(NAME))
+			.email((String)map.get(EMAIL))
 			.build();
 	}
 }

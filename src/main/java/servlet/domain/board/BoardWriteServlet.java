@@ -13,17 +13,19 @@ import model.user.User;
 import servlet.Servlet;
 import session.SessionStorage;
 import webserver.exception.InvalidRequestException;
-import webserver.http.HttpRequest;
+import webserver.http.request.Cookies;
+import webserver.http.request.HttpRequest;
+import webserver.http.response.HttpResponse;
 import webserver.http.Method;
 
 @MyMapping(url = "/board/write", method = Method.POST)
 public class BoardWriteServlet implements Servlet {
 
 	@Override
-	public String execute(HttpRequest httpRequest) {
-		Map<String, String> cookies = httpRequest.getCookies();
-		Map<String, String> param = httpRequest.getModel();
-		String sid = cookies.get("sid");
+	public String execute(HttpRequest httpRequest, HttpResponse httpResponse) {
+		Cookies cookies = httpRequest.getCookies();
+		Map<String, Object> param = httpRequest.getModel();
+		String sid = cookies.getCookie("sid");
 		if (isLoginUser(sid)) {
 			Optional<String> sessionUserId = SessionStorage.getSessionUserId(sid);
 			sessionUserId.ifPresent(userId -> {

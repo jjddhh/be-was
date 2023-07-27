@@ -12,19 +12,21 @@ import model.board.Board;
 import model.user.User;
 import servlet.Servlet;
 import session.SessionStorage;
-import webserver.http.HttpRequest;
+import webserver.http.request.Cookies;
+import webserver.http.request.HttpRequest;
+import webserver.http.response.HttpResponse;
 
 @MyMapping(url = "/board/show")
 @ResponseBody
 public class BoardShowServlet implements Servlet {
 
 	@Override
-	public String execute(HttpRequest httpRequest) {
-		Map<String, String> cookies = httpRequest.getCookies();
-		Map<String, String> model = httpRequest.getModel();
-		String sid = cookies.get("sid");
+	public String execute(HttpRequest httpRequest, HttpResponse httpResponse) {
+		Cookies cookies = httpRequest.getCookies();
+		String sid = cookies.getCookie("sid");
+		Map<String, Object> model = httpRequest.getModel();
 		if (isLoginUser(sid)) {
-			Integer boardId = Integer.parseInt(model.get("id"));
+			Integer boardId = Integer.parseInt((String)model.get("id"));
 			Board board = BoardDatabase.get(boardId);
 			String boardDetailHtml = buildBoardDetail(board);
 			return boardDetailHtml;
@@ -49,7 +51,6 @@ public class BoardShowServlet implements Servlet {
 	}
 
 	private String buildBoardDetail(Board board) {
-
 		StringBuilder htmlBuilder = new StringBuilder();
 		htmlBuilder.append("<!DOCTYPE html>\n");
 		htmlBuilder.append("<html lang=\"kr\">\n");
