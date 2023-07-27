@@ -94,16 +94,7 @@ public class IndexServlet implements Servlet {
         htmlBuilder.append("                    <ul class=\"nav navbar-nav navbar-right\">\n");
         htmlBuilder.append("                        <li class=\"active\"><a href=\"index.html\">Posts</a></li>\n");
 
-        String loginPart = "                        <li><a href=\"user/login.html\" role=\"button\">로그인</a></li>\n";
-
-        Cookies cookies = httpRequest.getCookies();
-        String sid = cookies.getCookie("sid");
-
-        if (isLoginUser(sid)) {
-            Optional<String> sessionUserId = SessionStorage.getSessionUserId(sid);
-            loginPart = "                        <li><a>" +  sessionUserId.get() + " 님</a></li>\n";
-        }
-
+        String loginPart = renderLoginPart(httpRequest);
         htmlBuilder.append(loginPart);
 
         htmlBuilder.append("                        <li><a href=\"user/form.html\" role=\"button\">회원가입</a></li>\n");
@@ -118,27 +109,8 @@ public class IndexServlet implements Servlet {
         htmlBuilder.append("                <div class=\"panel panel-default qna-list\">\n");
         htmlBuilder.append("                    <ul class=\"list\">\n");
 
-        List<Board> boardList = BoardDatabase.getList();
-        boardList.forEach(board -> {
-            htmlBuilder.append("                        <li>\n");
-            htmlBuilder.append("                            <div class=\"wrap\">\n");
-            htmlBuilder.append("                                <div class=\"main\">\n");
-            htmlBuilder.append("                                    <strong class=\"subject\">\n");
-            htmlBuilder.append("                                        <a href=\"./board/show?id=").append(board.getBoardId()).append("\">").append(board.getTitle()).append("</a>\n");
-            htmlBuilder.append("                                    </strong>\n");
-            htmlBuilder.append("                                    <div class=\"auth-info\">\n");
-            htmlBuilder.append("                                        <i class=\"icon-add-comment\"></i>\n");
-            htmlBuilder.append("                                        <span class=\"time\">").append(board.getCreatedAt()).append("</span>\n");
-            htmlBuilder.append("                                        <a href=\"./user/profile.html\" class=\"author\">").append(board.getWriter()).append("</a>\n");
-            htmlBuilder.append("                                    </div>\n");
-            htmlBuilder.append("                                    <div class=\"reply\" title=\"댓글\">\n");
-            htmlBuilder.append("                                        <i class=\"icon-reply\"></i>\n");
-            htmlBuilder.append("                                        <span class=\"point\">").append(board.getBoardId()).append("</span>\n");
-            htmlBuilder.append("                                    </div>\n");
-            htmlBuilder.append("                                </div>\n");
-            htmlBuilder.append("                            </div>\n");
-            htmlBuilder.append("                        </li>\n");
-        });
+        String boardListPart = renderBoardListPart();
+        htmlBuilder.append(boardListPart);
 
         htmlBuilder.append("                    </ul>\n");
         htmlBuilder.append("                    <div class=\"row\">\n");
@@ -167,6 +139,47 @@ public class IndexServlet implements Servlet {
         htmlBuilder.append("        <script src=\"js/scripts.js\"></script>\n");
         htmlBuilder.append("    </body>\n");
         htmlBuilder.append("</html>\n");
+    }
+
+    private static String renderBoardListPart() {
+        StringBuilder htmlBuilder = new StringBuilder();
+
+        List<Board> boardList = BoardDatabase.getList();
+        boardList.forEach(board -> {
+            htmlBuilder.append("                        <li>\n");
+            htmlBuilder.append("                            <div class=\"wrap\">\n");
+            htmlBuilder.append("                                <div class=\"main\">\n");
+            htmlBuilder.append("                                    <strong class=\"subject\">\n");
+            htmlBuilder.append("                                        <a href=\"./board/show?id=").append(board.getBoardId()).append("\">").append(board.getTitle()).append("</a>\n");
+            htmlBuilder.append("                                    </strong>\n");
+            htmlBuilder.append("                                    <div class=\"auth-info\">\n");
+            htmlBuilder.append("                                        <i class=\"icon-add-comment\"></i>\n");
+            htmlBuilder.append("                                        <span class=\"time\">").append(board.getCreatedAt()).append("</span>\n");
+            htmlBuilder.append("                                        <a href=\"./user/profile.html\" class=\"author\">").append(board.getWriter()).append("</a>\n");
+            htmlBuilder.append("                                    </div>\n");
+            htmlBuilder.append("                                    <div class=\"reply\" title=\"댓글\">\n");
+            htmlBuilder.append("                                        <i class=\"icon-reply\"></i>\n");
+            htmlBuilder.append("                                        <span class=\"point\">").append(board.getBoardId()).append("</span>\n");
+            htmlBuilder.append("                                    </div>\n");
+            htmlBuilder.append("                                </div>\n");
+            htmlBuilder.append("                            </div>\n");
+            htmlBuilder.append("                        </li>\n");
+        });
+
+        return htmlBuilder.toString();
+    }
+
+    private static String renderLoginPart(HttpRequest httpRequest) {
+        String loginPart = "                        <li><a href=\"user/login.html\" role=\"button\">로그인</a></li>\n";
+
+        Cookies cookies = httpRequest.getCookies();
+        String sid = cookies.getCookie("sid");
+
+        if (isLoginUser(sid)) {
+            Optional<String> sessionUserId = SessionStorage.getSessionUserId(sid);
+            loginPart = "                        <li><a>" +  sessionUserId.get() + " 님</a></li>\n";
+        }
+        return loginPart;
     }
 
     private static boolean isLoginUser(String sid) {

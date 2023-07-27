@@ -51,7 +51,6 @@ public class BoardShowServlet implements Servlet {
 	}
 
 	private String buildBoardDetail(Board board) {
-
 		StringBuilder htmlBuilder = new StringBuilder();
 		htmlBuilder.append("<!DOCTYPE html>\n");
 		htmlBuilder.append("<html lang=\"kr\">\n");
